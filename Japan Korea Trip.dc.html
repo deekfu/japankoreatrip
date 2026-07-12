@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Karla:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    body { margin: 0; background: oklch(0.96 0.014 75); }
+    ::selection { background: oklch(0.62 0.09 40 / 0.25); }
+  </style>
+</helmet>
+
+<div style="font-family: 'Karla', sans-serif; color: oklch(0.27 0.012 55); background: oklch(0.96 0.014 75); min-height: 100vh; line-height: 1.5;">
+
+  <!-- HERO -->
+  <div style="position: relative; height: 520px; overflow: hidden; background-image: url('assets/hero-street.png'); background-size: cover; background-position: center;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0.2 0.02 260 / {{ heroOverlay }}) 0%, oklch(0.18 0.02 260 / {{ heroOverlayStrong }}) 100%);"></div>
+    <div style="position: relative; z-index: 2; max-width: 880px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 24px; gap: 18px;">
+      
+      <div style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 68px; line-height: 1.05; color: oklch(0.98 0.01 70);">Japan + Korea Family Trip</div>
+      <div style="font-size: 19px; color: oklch(0.95 0.015 70); font-weight: 500;">November 3 – 17, 2026</div>
+      <div style="font-size: 15px; color: oklch(0.9 0.015 70); letter-spacing: 0.02em;">Tokyo → Seoul → Osaka → Hakone / Mt. Fuji → Tokyo</div>
+      <div style="max-width: 560px; font-size: 15px; color: oklch(0.92 0.015 70); margin-top: 6px; font-style: italic;"><br></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div style="position: sticky; top: 0; z-index: 20; background: oklch(0.98 0.01 75 / 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid oklch(0.85 0.015 75); display: flex; justify-content: center; gap: 4px; padding: 0 16px; overflow-x: auto;">
+    <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="6">
+      <button onClick="{{ tab.onClick }}" style="border: none; background: none; cursor: pointer; padding: 16px 18px; font-family: 'Karla', sans-serif; font-size: 14px; font-weight: 600; color: {{ tab.color }}; border-bottom: 3px solid {{ tab.borderColor }}; white-space: nowrap; transition: color 0.15s;">{{ tab.label }}</button>
+    </sc-for>
+  </div>
+
+  <div style="max-width: 920px; margin: 0 auto; padding: 48px 24px 100px;">
+
+    <!-- ITINERARY -->
+    <sc-if value="{{ isItinerary }}" hint-placeholder-val="{{ true }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 6px; flex-wrap: wrap;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600;">Day-by-Day Itinerary</div>
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: oklch(0.32 0.05 145); background: oklch(0.9 0.03 145); padding: 8px 14px; border-radius: 100px;">
+            <input type="checkbox" checked="{{ state_easyOnly }}" onChange="{{ toggleEasyOnly }}" style="accent-color: oklch(0.5 0.06 145); width: 15px; height: 15px;">
+            Highlight easy-pace only
+          </label>
+        </div>
+        <div style="font-size: 15px; color: oklch(0.45 0.015 55); margin-bottom: 28px;">15 days · tap a day to expand. Each slot offers a couple of options plus doing your own thing.</div>
+
+        <sc-for list="{{ days }}" as="day" hint-placeholder-count="15">
+          <div style="border: 1px solid oklch(0.85 0.015 75); border-radius: 20px; margin-bottom: 14px; overflow: hidden; background: oklch(0.98 0.008 75);">
+            <button onClick="{{ day.onToggle }}" style="width: 100%; border: none; background: none; cursor: pointer; padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left;">
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 700; color: oklch(0.5 0.08 45); min-width: 78px;">{{ day.date }}<span style="display:block; font-family: 'Karla', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: oklch(0.55 0.015 55);">{{ day.dow }}</span></div>
+                <div>
+                  <div style="font-size: 17px; font-weight: 700; color: oklch(0.27 0.012 55);">{{ day.title }}</div>
+                  <sc-if value="{{ day.note }}" hint-placeholder-val="{{ false }}"><div style="font-size: 13px; font-style: italic; color: oklch(0.45 0.015 55); margin-top: 3px;">{{ day.note }}</div></sc-if>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.4 0.06 265); background: oklch(0.9 0.02 265); padding: 5px 11px; border-radius: 100px;">{{ day.city }}</div>
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.4 0.07 45); background: oklch(0.9 0.03 45); padding: 5px 11px; border-radius: 100px; white-space: nowrap;">🏨 {{ day.hotel }}</div>
+                </div>
+                <div style="font-size: 18px; color: oklch(0.55 0.015 55); transform: {{ day.arrowTransform }}; transition: transform 0.2s;">▸</div>
+              </div>
+            </button>
+            <sc-if value="{{ day.open }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 4px 22px 22px; display: flex; flex-direction: column; gap: 22px;">
+                <sc-for list="{{ day.groups }}" as="grp" hint-placeholder-count="1">
+                  <div style="display: flex; flex-direction: column; gap: 18px;">
+                    <sc-if value="{{ grp.label }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: oklch(0.5 0.08 45); border-bottom: 1px solid oklch(0.88 0.015 75); padding-bottom: 6px;">{{ grp.label }}</div>
+                    </sc-if>
+                    <sc-for list="{{ grp.slots }}" as="slot" hint-placeholder-count="5">
+                      <div>
+                        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: oklch(0.5 0.02 55); margin-bottom: 8px;">{{ slot.name }}</div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                          <sc-for list="{{ slot.options }}" as="opt" hint-placeholder-count="2">
+                            <div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: {{ opt.bg }}; opacity: {{ opt.dim }}; transition: opacity 0.2s; border: 1px solid {{ opt.border }};">
+                              <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: {{ opt.fg }}; background: {{ opt.chipBg }}; padding: 4px 9px; border-radius: 100px; white-space: nowrap; margin-top: 1px;">{{ opt.tagLabel }}</div>
+                              <div>
+                                <div style="font-weight: 700; font-size: 14.5px; color: oklch(0.27 0.012 55);">{{ opt.title }}</div>
+                                <div style="font-size: 13.5px; color: oklch(0.42 0.015 55); margin-top: 2px;">{{ opt.desc }}</div>
+                              </div>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- PLACES & LINKS -->
+    <sc-if value="{{ isPlaces }}" hint-placeholder-val="{{ false }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; margin-bottom: 6px;">Places &amp; Links</div>
+        <div style="font-size: 15px; color: oklch(0.45 0.015 55); margin-bottom: 20px;">Every named place from the itinerary, grouped by city. Tap to open a map search.</div>
+        <div style="height: 260px; border-radius: 18px; margin-bottom: 32px; background-image: url('assets/places-divider.png'); background-size: cover; background-position: center;"></div>
+        <sc-for list="{{ placeGroups }}" as="group" hint-placeholder-count="5">
+          <div style="margin-bottom: 30px;">
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: oklch(0.5 0.08 45); margin-bottom: 12px;">{{ group.city }}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <sc-for list="{{ group.places }}" as="place" hint-placeholder-count="6">
+                <a href="{{ place.url }}" target="_blank" style="text-decoration: none; font-size: 14px; font-weight: 600; color: oklch(0.35 0.02 55); background: oklch(0.98 0.008 75); border: 1px solid oklch(0.85 0.015 75); padding: 10px 16px; border-radius: 100px;" style-hover="border-color: oklch(0.6 0.05 55); color: oklch(0.4 0.07 45);">{{ place.name }} ↗</a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- TRAVELERS -->
+    <sc-if value="{{ isTravelers }}" hint-placeholder-val="{{ false }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; margin-bottom: 6px;">Travelers</div>
+        <div style="height: 260px; border-radius: 18px; margin-bottom: 32px; background-image: url('assets/travelers-divider.png'); background-size: cover; background-position: center;"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px;">
+          <sc-for list="{{ travelers }}" as="t" hint-placeholder-count="10">
+            <div style="border: 1px solid oklch(0.85 0.015 75); border-radius: 20px; padding: 20px; background: oklch(0.98 0.008 75); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; position: relative;">
+              <sc-if value="{{ t.easy }}" hint-placeholder-val="{{ false }}">
+                <div style="position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: oklch(0.32 0.05 145); background: oklch(0.9 0.03 145); padding: 4px 9px; border-radius: 100px;">Easy pace</div><div style="position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: oklch(0.32 0.05 145); background: oklch(0.9 0.03 145); padding: 4px 9px; border-radius: 100px;">Easy pace</div>
+              </sc-if>
+              <div style="width: 84px; height: 84px; border-radius: 50%; background: {{ t.avatarBg }}; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; color: {{ t.avatarFg }};">{{ t.initials }}</div>
+              <div style="font-size: 17px; font-weight: 700;">{{ t.name }}</div>
+              <sc-if value="{{ t.note }}" hint-placeholder-val="{{ false }}"></sc-if>
+              <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; text-align: left;">
+                <div style="font-size: 12px; color: oklch(0.5 0.015 55);">Email<div style="font-size: 13.5px; color: oklch(0.3 0.015 55); font-weight: 600;">{{ t.email }}</div></div>
+                <div style="font-size: 12px; color: oklch(0.5 0.015 55);">Phone / SMS<div style="font-size: 13.5px; color: oklch(0.3 0.015 55); font-weight: 600;">{{ t.phone }}</div></div>
+                <div style="font-size: 12px; color: oklch(0.5 0.015 55);">WhatsApp<div style="font-size: 13.5px; color: oklch(0.3 0.015 55); font-weight: 600;">{{ t.whatsapp }}</div></div>
+              </div>
+            </div><div style="position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: oklch(0.32 0.05 145); background: oklch(0.9 0.03 145); padding: 4px 9px; border-radius: 100px;">Easy pace</div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- FLIGHTS -->
+    <sc-if value="{{ isFlights }}" hint-placeholder-val="{{ false }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; margin-bottom: 6px;">Flight Itineraries</div>
+        <div style="font-size: 15px; color: oklch(0.45 0.015 55); margin-bottom: 20px;">Fill in confirmation numbers and times as bookings are made.</div>
+        <div style="height: 260px; border-radius: 18px; margin-bottom: 32px; background-image: url('assets/flights-divider.png'); background-size: cover; background-position: center;"></div>
+        <div style="border: 1px solid oklch(0.85 0.015 75); border-radius: 18px; overflow: hidden; background: oklch(0.98 0.008 75);">
+          <div style="display: grid; grid-template-columns: 1.6fr 0.8fr 1fr 0.8fr 1.1fr 0.9fr 0.9fr; background: oklch(0.9 0.02 265); font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: oklch(0.35 0.07 265);">
+            <div style="padding: 12px 14px;">Route</div><div style="padding: 12px 14px;">Date</div><div style="padding: 12px 14px;">Airline</div><div style="padding: 12px 14px;">Flight #</div><div style="padding: 12px 14px;">Confirmation #</div><div style="padding: 12px 14px;">Depart</div><div style="padding: 12px 14px;">Arrive</div>
+          </div>
+          <sc-for list="{{ flights }}" as="f" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 1.6fr 0.8fr 1fr 0.8fr 1.1fr 0.9fr 0.9fr; border-top: 1px solid oklch(0.85 0.015 75); font-size: 13.5px;">
+              <div style="padding: 14px; font-weight: 700;">{{ f.route }}</div>
+              <div style="padding: 14px; color: oklch(0.42 0.015 55);">{{ f.date }}</div>
+              
+              <div style="padding: 14px; color: oklch(0.42 0.015 55);">{{ f.flightNo }}</div>
+              <div style="padding: 14px; color: oklch(0.42 0.015 55);">{{ f.confNo }}</div>
+              <div style="padding: 14px; color: oklch(0.42 0.015 55);">{{ f.depart }}</div>
+              <div style="padding: 14px; color: oklch(0.42 0.015 55);">{{ f.arrive }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- TODO BY PERSON -->
+    <sc-if value="{{ isTodo }}" hint-placeholder-val="{{ false }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; margin-bottom: 6px;">To-Do by Person</div>
+        <div style="font-size: 15px; color: oklch(0.45 0.015 55); margin-bottom: 20px;">Passport checks, entry requirements, and packing — one list per traveler.</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px;">
+          <sc-for list="{{ todoPeople }}" as="p" hint-placeholder-count="10">
+            <button onClick="{{ p.onClick }}" style="border: 1px solid {{ p.borderColor }}; background: {{ p.bg }}; color: {{ p.fg }}; cursor: pointer; padding: 9px 16px; border-radius: 100px; font-size: 13.5px; font-weight: 700;">{{ p.name }}</button>
+          </sc-for>
+        </div>
+        <div style="border: 1px solid oklch(0.85 0.015 75); border-radius: 18px; padding: 22px; background: oklch(0.98 0.008 75); display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ activeTodoItems }}" as="item" hint-placeholder-count="6">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; color: {{ item.color }}; text-decoration: {{ item.strike }};">
+              <input type="checkbox" checked="{{ item.done }}" onChange="{{ item.onToggle }}" style="width: 17px; height: 17px; accent-color: oklch(0.5 0.08 45); flex-shrink: 0;">
+              {{ item.text }}
+            </label>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ACTION ITEMS -->
+    <sc-if value="{{ isAction }}" hint-placeholder-val="{{ false }}">
+      <div style="animation: fadeIn 0.3s ease;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; margin-bottom: 6px;">Action Items</div>
+        <div style="font-size: 15px; color: oklch(0.45 0.015 55); margin-bottom: 8px;">Trip-wide bookings and logistics — {{ actionDoneCount }} of {{ actionTotalCount }} done.</div>
+        <div style="height: 8px; border-radius: 100px; background: oklch(0.9 0.02 265); margin-bottom: 24px; overflow: hidden;"><div style="height: 100%; width: {{ actionProgressPct }}; background: oklch(0.55 0.06 145); border-radius: 100px; transition: width 0.2s;"></div></div>
+        <div style="border: 1px solid oklch(0.85 0.015 75); border-radius: 18px; padding: 22px; background: oklch(0.98 0.008 75); display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ actionItems }}" as="item" hint-placeholder-count="14">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14.5px; color: {{ item.color }}; text-decoration: {{ item.strike }};">
+              <input type="checkbox" checked="{{ item.done }}" onChange="{{ item.onToggle }}" style="width: 17px; height: 17px; accent-color: oklch(0.5 0.08 45); flex-shrink: 0;">
+              {{ item.text }}
+            </label>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="text-align: center; padding: 28px 24px 40px; font-size: 12.5px; color: oklch(0.55 0.015 55); border-top: 1px solid oklch(0.85 0.015 75);">Japan + Korea Family Trip · Nov 3–17, 2026 · made with care for the whole crew</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280, &quot;height&quot;: 900}, &quot;expandAllByDefault&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Itinerary&quot;}, &quot;easyPaceOnlyDefault&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Itinerary&quot;}, &quot;heroOverlay&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 45, &quot;min&quot;: 0, &quot;max&quot;: 90, &quot;step&quot;: 5, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Hero&quot;, &quot;unit&quot;: &quot;%&quot;}}">
+const TAG_INFO = {
+  easy:   { label: 'Easy pace',    bg: 'oklch(0.94 0.02 145 / 1)', chipBg: 'oklch(0.86 0.05 145)', fg: 'oklch(0.3 0.06 145)',  border: 'oklch(0.82 0.04 145)' },
+  active: { label: 'Active',       bg: 'oklch(0.95 0.025 50 / 1)', chipBg: 'oklch(0.85 0.07 45)',  fg: 'oklch(0.38 0.09 40)',  border: 'oklch(0.82 0.05 45)' },
+  foodie: { label: 'Foodie',       bg: 'oklch(0.95 0.015 340 / 1)',chipBg: 'oklch(0.85 0.05 340)', fg: 'oklch(0.35 0.09 340)', border: 'oklch(0.82 0.03 340)' },
+  travel: { label: 'Travel',       bg: 'oklch(0.95 0.004 90 / 1)', chipBg: 'oklch(0.85 0.01 90)',  fg: 'oklch(0.38 0.012 90)', border: 'oklch(0.82 0.008 90)' },
+  own:    { label: 'On your own',  bg: 'oklch(0.95 0.012 265 / 1)',chipBg: 'oklch(0.85 0.05 265)', fg: 'oklch(0.35 0.08 265)', border: 'oklch(0.82 0.035 265)' },
+};
+
+function ownText(slotName, city) {
+  const map = {
+    Morning: `Sleep in or explore ${city} independently before the day's plans.`,
+    Lunch: `Grab lunch independently near ${city}.`,
+    Afternoon: `Explore ${city} independently — shops, cafes, or downtime.`,
+    Dinner: `Dinner independently — pick any spot in ${city} that sounds good.`,
+    Night: `Free evening — rest at the hotel or explore ${city} independently.`,
+  };
+  return map[slotName] || `Time on your own in ${city}.`;
+}
+
+const RAW_DAYS = [
+  { date: 'Nov 3–4', dow: 'Tue–Wed', title: 'En route → Tokyo', city: 'Tokyo', hotel: 'Shinjuku Hotel', note: 'Overnight flight — arrive and ease in.', subDays: [
+    { label: 'Nov 3', slots: [
+      { name: 'Morning', options: [{ title: 'Overnight flight to Tokyo', desc: 'Depart LAX, settle in for the long haul — sleep masks and neck pillows recommended.', tag: 'travel' }] },
+      { name: 'Lunch', options: [{ title: 'In-flight meal', desc: 'Onboard meal service during the flight.', tag: 'travel' }] },
+      { name: 'Afternoon', options: [{ title: 'In-flight', desc: 'Still en route — crossing the international date line.', tag: 'travel' }] },
+      { name: 'Dinner', options: [{ title: 'In-flight meal', desc: 'Second onboard meal service before descent into Narita.', tag: 'travel' }] },
+      { name: 'Night', options: [{ title: 'Overnight in the air', desc: 'Sleep mode — arrival is the afternoon of Nov 4.', tag: 'travel' }] },
+    ]},
+    { label: 'Nov 4', slots: [
+      { name: 'Morning', options: [{ title: 'Still in flight', desc: 'Final approach into Narita late morning.', tag: 'travel' }] },
+      { name: 'Lunch', options: [{ title: 'Arrive Narita', desc: 'Land at 2:25pm, clear immigration and collect luggage.', tag: 'travel' }] },
+      { name: 'Afternoon', options: [{ title: 'Transfer to Shinjuku', desc: 'Private van transfer to the Shinjuku hotel.', tag: 'travel' }] },
+      { name: 'Dinner', options: [{ title: 'Welcome dinner, Shinjuku', desc: 'Easy izakaya near the hotel — small plates, no reservation needed.', tag: 'easy' }, { title: 'Omoide Yokocho lantern alley', desc: 'Wander the smoky grilled-skewer alleys for a livelier first-night option.', tag: 'foodie' }] },
+      { name: 'Night', options: [{ title: 'Early to bed', desc: 'Jet lag recovery — lights out early for tomorrow\'s first full day.', tag: 'easy' }] },
+    ]},
+  ]},
+  { date: 'Nov 5', dow: 'Thu', title: 'Fly to Seoul', city: 'Seoul', hotel: 'Conrad Seoul Hotel', note: 'Direct flight from Tokyo — no more Narita staging night.', slots: [
+    { name: 'Morning', options: [{ title: 'Asakusa & Senso-ji', desc: 'One last easy Tokyo morning — temple visit and Nakamise shopping before heading to the airport.', tag: 'easy' }] },
+    { name: 'Lunch', options: [{ title: 'Quick lunch before the flight', desc: 'Light bite near the hotel before transferring to the airport.', tag: 'travel' }] },
+    { name: 'Afternoon', options: [{ title: 'Flight to Seoul Incheon', desc: 'Short afternoon hop across to Korea.', tag: 'travel' }] },
+    { name: 'Dinner', options: [{ title: 'Korean BBQ welcome dinner', desc: 'Tabletop grill dinner to kick off the Seoul leg.', tag: 'foodie' }, { title: 'Euljiro food alley', desc: 'Old-school alley of tiny grill counters — a livelier alternative (skipping Myeongdong).', tag: 'active' }] },
+    { name: 'Night', options: [{ title: 'Easy hotel evening', desc: 'Settle into the Conrad Seoul after a travel day.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 6', dow: 'Fri', title: 'Seoul', city: 'Seoul', hotel: 'Conrad Seoul Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Gyeongbokgung Palace', desc: 'Main palace grounds, timed to catch the changing-of-the-guard ceremony.', tag: 'easy' }] },
+    { name: 'Lunch', options: [{ title: 'Insadong lunch', desc: 'Traditional-style lunch amid the tea houses and craft shops.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Insadong shopping', desc: 'Browse ceramics, stationery, and tea along the pedestrian street.', tag: 'easy' }, { title: 'N Seoul Tower via cable car', desc: 'Ride the cable car up Namsan for panoramic city views.', tag: 'active' }] },
+    { name: 'Dinner', options: [{ title: 'BBQ dinner in Seongsu', desc: 'Trendy grill spot in Seoul\'s converted-warehouse district.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Seongsu cafe hop', desc: 'Wander the neighborhood\'s design-forward cafes and shops.', tag: 'active' }] },
+  ]},
+  { date: 'Nov 7', dow: 'Sat', title: 'Seoul', city: 'Seoul', hotel: 'Conrad Seoul Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Mangwon Market food walk', desc: 'Local market crawl for street snacks, quieter than Gwangjang.', tag: 'foodie' }, { title: 'DMZ day tour (optional, all-day)', desc: 'Full-day tour to the demilitarized zone — separate departure time.', tag: 'active' }] },
+    { name: 'Lunch', options: [{ title: 'Market-stall lunch', desc: 'Grab-and-go bites from the market stalls.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Seongsu cafes', desc: 'More time in the neighborhood\'s design-forward cafes.', tag: 'easy' }] },
+    { name: 'Dinner', options: [{ title: 'Neighborhood Korean dinner', desc: 'Relaxed sit-down dinner near the hotel.', tag: 'easy' }] },
+    { name: 'Night', options: [{ title: 'Pack for Osaka', desc: 'Early night — flight to Osaka tomorrow.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 8', dow: 'Sun', title: 'Fly Seoul → Osaka', city: 'Osaka', hotel: 'Osaka Hotel', note: 'Direct flight — skips the backtrack through Tokyo.', slots: [
+    { name: 'Morning', options: [{ title: 'Flight to Osaka Kansai', desc: 'Direct flight, no backtrack through Tokyo needed.', tag: 'travel' }] },
+    { name: 'Lunch', options: [{ title: 'Airport lunch', desc: 'Light meal before or after the flight.', tag: 'travel' }] },
+    { name: 'Afternoon', options: [{ title: 'Arrive, transfer to hotel', desc: 'Settle into the Osaka hotel and get oriented.', tag: 'travel' }] },
+    { name: 'Dinner', options: [{ title: 'Dotonbori food walk', desc: 'Neon canal-side crawl — takoyaki, okonomiyaki, and kushikatsu stalls.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Dotonbori canal stroll', desc: 'Easy evening walk along the lit-up canal.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 9', dow: 'Mon', title: 'Osaka', city: 'Osaka', hotel: 'Osaka Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Osaka Castle', desc: 'Grounds and museum floors inside the rebuilt castle keep.', tag: 'easy' }, { title: 'Osaka Aquarium (Kaiyukan)', desc: 'Whale-shark tank and a full loop of ramps.', tag: 'active' }] },
+    { name: 'Lunch', options: [{ title: 'Lunch near the castle', desc: 'Casual set-lunch spot in the castle park area.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Shinsaibashi shopping', desc: 'Covered arcade shopping street running through central Osaka.', tag: 'easy' }] },
+    { name: 'Dinner', options: [{ title: 'Kushikatsu in Shinsekai', desc: 'Deep-fried skewers in the retro Shinsekai district.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Tsutenkaku Tower lights', desc: 'Short stroll to see the retro tower lit up at night.', tag: 'active' }] },
+  ]},
+  { date: 'Nov 10', dow: 'Tue', title: 'Split-choice: Osaka or Kyoto', city: 'Osaka', hotel: 'Osaka Hotel', note: 'Choose easy Osaka or an active Kyoto day trip — everyone reconvenes for dinner.', slots: [
+    { name: 'Morning', options: [{ title: 'Sumiyoshi Taisha (easy · Osaka)', desc: 'Serene shrine grounds, flat paths, an unhurried morning.', tag: 'easy' }, { title: 'Fushimi Inari full climb (active · Kyoto)', desc: 'Hike the entire torii-gate trail up the mountain.', tag: 'active' }] },
+    { name: 'Lunch', options: [{ title: 'Shitennoji-area lunch (Osaka)', desc: 'Quiet lunch spot near Japan\'s oldest official temple.', tag: 'foodie' }, { title: 'Kyoto station lunch', desc: 'Quick bite before or after the Kyoto day trip.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Shitennoji Temple (easy · Osaka)', desc: 'Peaceful temple complex, one of Japan\'s oldest.', tag: 'easy' }, { title: 'Kiyomizu-dera (active · Kyoto)', desc: 'Hillside wooden temple with sweeping city views.', tag: 'active' }] },
+    { name: 'Dinner', options: [{ title: 'Teppanyaki reconvene dinner', desc: 'Whole group back together for tabletop teppanyaki.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Early rest', desc: 'Pack for tomorrow\'s move to Hakone.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 11', dow: 'Wed', title: 'Travel to Hakone / Mt. Fuji', city: 'Hakone', hotel: 'Hakone Ryokan', slots: [
+    { name: 'Morning', options: [{ title: 'Shinkansen to Odawara', desc: 'Bullet train from Osaka, then local transfer toward Hakone.', tag: 'travel' }] },
+    { name: 'Lunch', options: [{ title: 'Odawara station lunch', desc: 'Quick bite at the transfer station.', tag: 'travel' }] },
+    { name: 'Afternoon', options: [{ title: 'Ryokan check-in', desc: 'Settle into traditional tatami rooms for two nights.', tag: 'easy' }] },
+    { name: 'Dinner', options: [{ title: 'Kaiseki dinner', desc: 'Multi-course seasonal dinner served in the ryokan.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Onsen soak', desc: 'Hot-spring bathing to unwind after the travel day.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 12', dow: 'Thu', title: 'Hakone / Mt. Fuji', city: 'Hakone', hotel: 'Hakone Ryokan', slots: [
+    { name: 'Morning', options: [{ title: 'Hakone Open-Air Museum', desc: 'Sculpture park set against the mountains, flat walking paths.', tag: 'easy' }, { title: 'Old Tokaido Road hike', desc: 'Historic cedar-lined trail through the hills.', tag: 'active' }] },
+    { name: 'Lunch', options: [{ title: 'Soba lunch in Hakone', desc: 'Simple buckwheat-noodle lunch near the museum.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Lake Ashi cruise', desc: 'Scenic boat ride with views toward Mt. Fuji, weather permitting.', tag: 'easy' }, { title: 'Owakudani ropeway', desc: 'Cable car over the volcanic valley\'s sulfur vents.', tag: 'active' }] },
+    { name: 'Dinner', options: [{ title: 'Ryokan dinner', desc: 'Second night of seasonal kaiseki-style courses.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Onsen soak', desc: 'Another quiet hot-spring evening before heading back to Tokyo.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 13', dow: 'Fri', title: 'Travel back to Tokyo', city: 'Tokyo', hotel: 'Tokyo Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Odakyu Romancecar to Tokyo', desc: 'Scenic express train back into the city.', tag: 'travel' }] },
+    { name: 'Lunch', options: [{ title: 'Shibuya-area lunch', desc: 'Casual lunch near Shibuya after arriving back in Tokyo.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Shibuya Crossing & Sky', desc: 'Revisit the crossing and skyline views.', tag: 'active' }, { title: 'Harajuku', desc: 'Boutique-lined Takeshita Street and back-alley cafes.', tag: 'easy' }] },
+    { name: 'Dinner', options: [{ title: 'Izakaya dinner', desc: 'Casual small-plates dinner, group-style ordering.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Easy evening', desc: 'Rest up after a travel-heavy day.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 14', dow: 'Sat', title: 'Tokyo', city: 'Tokyo', hotel: 'Tokyo Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Tokyo National Museum', desc: 'Japan\'s largest art and antiquities collection, indoors and unhurried.', tag: 'easy' }, { title: 'Tsukiji Outer Market', desc: 'Browse and snack through the bustling market stalls.', tag: 'foodie' }] },
+    { name: 'Lunch', options: [{ title: 'Market or museum-area lunch', desc: 'Grab a bite near whichever morning stop you chose.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Ueno Park & Zoo', desc: 'Easy park paths and Japan\'s oldest zoo.', tag: 'easy' }, { title: 'Akihabara', desc: 'Electronics and anime-culture district, plenty to browse.', tag: 'active' }] },
+    { name: 'Dinner', options: [{ title: 'Sukiyaki dinner', desc: 'Simmered hot-pot dinner, table-side cooking.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Ueno evening stroll', desc: 'Quiet walk around the park at night.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 15', dow: 'Sun', title: 'Tokyo — free day', city: 'Tokyo', hotel: 'Tokyo Hotel', note: 'A slower day with room to revisit a favorite spot or simply rest.', slots: [
+    { name: 'Morning', options: [{ title: 'Sleep in / hotel breakfast', desc: 'A slower morning after a busy trip — no fixed plans.', tag: 'easy' }, { title: 'Nakameguro canal walk', desc: 'Riverside cafes and boutiques, an easy relaxed stroll.', tag: 'easy' }] },
+    { name: 'Lunch', options: [{ title: 'Nakameguro cafe lunch', desc: 'Casual lunch along the canal.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Revisit a favorite spot', desc: 'Free time to go back to something loved earlier in the trip, or just rest.', tag: 'easy' }, { title: 'Odaiba', desc: 'Waterfront district with shopping and skyline views across the bay.', tag: 'active' }] },
+    { name: 'Dinner', options: [{ title: 'Ramen dinner', desc: 'Casual bowl of ramen at a neighborhood shop.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Easy evening', desc: 'Relax ahead of the last full day tomorrow.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 16', dow: 'Mon', title: 'Tokyo buffer day', city: 'Tokyo', hotel: 'Tokyo Hotel', note: 'A lighter day before departure — group farewell dinner.', slots: [
+    { name: 'Morning', options: [{ title: 'Hamarikyu Gardens', desc: 'Tidal garden with a teahouse on the pond, gentle paths throughout.', tag: 'easy' }] },
+    { name: 'Lunch', options: [{ title: 'Garden-side teahouse lunch', desc: 'Light lunch overlooking the pond.', tag: 'foodie' }] },
+    { name: 'Afternoon', options: [{ title: 'Ginza shopping', desc: 'Last-minute gifts and browsing in the flagship district.', tag: 'easy' }] },
+    { name: 'Dinner', options: [{ title: 'Group farewell dinner', desc: 'Whole party together for a final Tokyo dinner.', tag: 'foodie' }] },
+    { name: 'Night', options: [{ title: 'Final packing', desc: 'Repack and settle bags ahead of tomorrow\'s flight home.', tag: 'easy' }] },
+  ]},
+  { date: 'Nov 17', dow: 'Tue', title: 'Depart Tokyo Narita → LAX', city: 'Tokyo', hotel: 'Tokyo Hotel', slots: [
+    { name: 'Morning', options: [{ title: 'Transfer to Narita', desc: 'Final transfer to the airport for the trip home.', tag: 'travel' }] },
+    { name: 'Lunch', options: [{ title: 'Airport lunch', desc: 'Last bites in Japan before boarding.', tag: 'travel' }] },
+    { name: 'Afternoon', options: [{ title: 'Depart Narita → LAX', desc: 'Long flight home — safe travels.', tag: 'travel' }] },
+    { name: 'Dinner', options: [{ title: 'In-flight dinner', desc: 'Meal service somewhere over the Pacific.', tag: 'travel' }] },
+    { name: 'Night', options: [{ title: 'Arrive home', desc: 'Wheels down in LA — trip complete.', tag: 'travel' }] },
+  ]},
+];
+
+const PLACES_BY_CITY = {
+  Tokyo: ['Meiji Shrine', 'Yoyogi Park', 'Shibuya Sky', 'Shinjuku Gyoen', 'teamLab Planets', 'Asakusa Senso-ji', 'Omoide Yokocho', 'Golden Gai', 'Tokyo National Museum', 'Tsukiji Outer Market', 'Ueno Park', 'Akihabara', 'Hamarikyu Gardens', 'Ginza'],
+  Seoul: ['Gyeongbokgung Palace', 'Insadong', 'N Seoul Tower', 'Seongsu', 'Euljiro', 'Mangwon Market'],
+  Osaka: ['Osaka Castle', 'Osaka Aquarium (Kaiyukan)', 'Shinsaibashi', 'Dotonbori', 'Shinsekai', 'Sumiyoshi Taisha', 'Shitennoji Temple'],
+  Kyoto: ['Fushimi Inari Taisha', 'Kiyomizu-dera'],
+  Hakone: ['Hakone Open-Air Museum', 'Old Tokaido Road', 'Lake Ashi', 'Owakudani', 'Odawara Station'],
+};
+
+const AVATAR_PALETTE = [
+  { bg: 'oklch(0.86 0.05 45)', fg: 'oklch(0.35 0.09 40)' },
+  { bg: 'oklch(0.86 0.04 145)', fg: 'oklch(0.32 0.06 145)' },
+  { bg: 'oklch(0.88 0.02 265)', fg: 'oklch(0.35 0.08 265)' },
+  { bg: 'oklch(0.87 0.03 340)', fg: 'oklch(0.35 0.09 340)' },
+  { bg: 'oklch(0.87 0.008 90)', fg: 'oklch(0.38 0.012 90)' },
+];
+
+const RAW_TRAVELERS = [
+  { name: 'Dave', note: 'Trip organizer', easy: false },
+  { name: 'Linda', easy: false },
+  { name: 'Leah', easy: false },
+  { name: 'Briann', easy: false },
+  { name: 'John', easy: false },
+  { name: 'Duke', note: 'Traveling with Emma', easy: true },
+  { name: 'Michelle', note: 'Traveling with Emma', easy: true },
+  { name: 'Mary', easy: true },
+  { name: 'Lam', easy: true },
+  { name: 'Emma', note: 'Toddler', easy: true },
+  { name: 'Tony', note: 'Age 73', easy: true },
+];
+
+const RAW_FLIGHTS = [
+  { route: 'LAX → Tokyo Narita', date: 'Nov 3', airline: 'ZipAir', flightNo: 'ZG023', confNo: 'TQV1QA', depart: '9:30 AM', arrive: '2:25 PM (Nov 4)' },
+  { route: '', date: 'Nov 3' },
+  { route: '', date: 'Nov 3' },
+  { route: 'Tokyo Narita → Seoul Incheon', date: 'Nov 6' },
+  { route: 'Seoul Incheon → Osaka Kansai', date: 'Nov 9' },
+  { route: 'Tokyo Narita → LAX', date: 'Nov 17', airline: 'ZipAir', flightNo: 'ZG024', confNo: 'TQV1QA2', depart: '2:45 PM', arrive: '7:30 AM (Nov 17)' },
+  { route: '', date: 'Nov 17' },
+  { route: '', date: 'Nov 17' },
+];
+
+const BASE_TODO = [
+  'Check passport expiration (6+ months validity)',
+  'Confirm Korea entry requirements (K-ETA / arrival card)',
+  'Download offline maps & a translation app',
+  'Pack layers for November weather',
+  'Set aside some Japanese yen and Korean won cash',
+];
+
+const TODO_BY_NAME = {
+  Dave: ['Confirm all group reservations', 'Organize confirmation numbers for the group', 'Distribute pocket WiFi devices'],
+  Duke: ['Pack easy-pace day bag for Emma', 'Arrange stroller/carrier logistics'],
+  Michelle: ['Pack easy-pace day bag for Emma', 'Arrange stroller/carrier logistics'],
+  Mary: ['Comfortable walking shoes for easy-pace days', 'Pack any needed medications'],
+  Lam: ['Comfortable walking shoes for easy-pace days', 'Pack any needed medications'],
+  Tony: ['Comfortable walking shoes for easy-pace days', 'Pack any needed medications'],
+  Emma: ['Pack toddler snacks & entertainment', 'Travel-size diapers & wipes', 'Bring stroller-friendly ID documents'],
+};
+
+const RAW_ACTION_ITEMS = [
+  'Book international flights (LAX ↔ Tokyo, Tokyo ↔ Seoul, Seoul ↔ Osaka, Tokyo ↔ LAX)',
+  'Book Hakone ryokan (2 nights)',
+  'Reserve teamLab Planets tickets',
+  'Book Seoul lodging',
+  'Book Osaka lodging',
+  'Book Tokyo lodging (both legs)',
+  'Confirm Korea entry requirements for all travelers',
+  'Purchase travel insurance',
+  'Arrange pocket WiFi or SIM cards',
+  'Get Suica/Pasmo transit cards',
+  'Get T-money transit cards (Seoul)',
+  'Reserve group restaurant dinners (BBQ, kaiseki, teppanyaki, sukiyaki)',
+  'Book Shinkansen tickets (Osaka → Odawara)',
+  'Arrange airport transfers/rides',
+];
+
+class Component extends DCLogic {
+  state = {
+    activeTab: 'itinerary',
+    easyOnly: this.props.easyPaceOnlyDefault ?? false,
+    openDays: (() => {
+      const o = {};
+      if (this.props.expandAllByDefault) RAW_DAYS.forEach((_, i) => { o[i] = true; });
+      else o[0] = true;
+      return o;
+    })(),
+    activeTodoPerson: 'Dave',
+    todos: (() => {
+      const t = {};
+      RAW_TRAVELERS.forEach(tr => {
+        const extra = TODO_BY_NAME[tr.name] || [];
+        t[tr.name] = [...BASE_TODO, ...extra].map(text => ({ text, done: false }));
+      });
+      return t;
+    })(),
+    actionItems: RAW_ACTION_ITEMS.map(text => ({ text, done: false })),
+  };
+
+  toggleDay(i) {
+    this.setState(s => ({ openDays: { ...s.openDays, [i]: !s.openDays[i] } }));
+  }
+
+  toggleTodo(person, idx) {
+    this.setState(s => {
+      const list = s.todos[person].map((it, j) => j === idx ? { ...it, done: !it.done } : it);
+      return { todos: { ...s.todos, [person]: list } };
+    });
+  }
+
+  toggleAction(idx) {
+    this.setState(s => ({ actionItems: s.actionItems.map((it, j) => j === idx ? { ...it, done: !it.done } : it) }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const tabDefs = [
+      ['itinerary', 'Itinerary'], ['places', 'Places & Links'], ['travelers', 'Travelers'],
+      ['flights', 'Flight Itineraries'], ['todo', 'To-Do by Person'], ['action', 'Action Items'],
+    ];
+    const tabs = tabDefs.map(([key, label]) => ({
+      label,
+      onClick: () => this.setState({ activeTab: key }),
+      color: s.activeTab === key ? 'oklch(0.4 0.08 45)' : 'oklch(0.45 0.015 55)',
+      borderColor: s.activeTab === key ? 'oklch(0.55 0.09 45)' : 'transparent',
+    }));
+
+    const days = RAW_DAYS.map((day, i) => {
+      const open = !!s.openDays[i];
+      const mapSlots = (slots) => slots.map(slot => {
+        const opts = [...slot.options, { title: 'On your own', desc: ownText(slot.name, day.city), tag: 'own' }];
+        return {
+          name: slot.name,
+          options: opts.map(o => {
+            const info = TAG_INFO[o.tag];
+            const dim = (s.easyOnly && o.tag !== 'easy') ? 0.45 : 1;
+            return { title: o.title, desc: o.desc, tagLabel: info.label, bg: info.bg, chipBg: info.chipBg, fg: info.fg, border: info.border, dim };
+          }),
+        };
+      });
+      const groups = day.subDays
+        ? day.subDays.map(sd => ({ label: sd.label, slots: mapSlots(sd.slots) }))
+        : [{ label: null, slots: mapSlots(day.slots) }];
+      return {
+        date: day.date, dow: day.dow, title: day.title, city: day.city, hotel: day.hotel || 'TBD', note: day.note || null,
+        open, arrowTransform: open ? 'rotate(90deg)' : 'rotate(0deg)',
+        onToggle: () => this.toggleDay(i),
+        groups,
+      };
+    });
+
+    const placeGroups = Object.entries(PLACES_BY_CITY).map(([city, places]) => ({
+      city,
+      places: places.map(name => ({ name, url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + city)}` })),
+    }));
+
+    const travelers = RAW_TRAVELERS.map((t, i) => {
+      const pal = AVATAR_PALETTE[i % AVATAR_PALETTE.length];
+      const initials = t.name.slice(0, 2).toUpperCase();
+      return {
+        name: t.name, note: t.note || null, easy: t.easy, initials,
+        avatarBg: pal.bg, avatarFg: pal.fg,
+        email: '—', phone: '—', whatsapp: '—',
+      };
+    });
+
+    const flights = RAW_FLIGHTS.map(f => ({
+      route: f.route, date: f.date,
+      airline: f.airline || '—', flightNo: f.flightNo || '—', confNo: f.confNo || '—',
+      depart: f.depart || '—', arrive: f.arrive || '—',
+    }));
+
+    const todoPeople = RAW_TRAVELERS.map(t => {
+      const active = s.activeTodoPerson === t.name;
+      return {
+        name: t.name,
+        onClick: () => this.setState({ activeTodoPerson: t.name }),
+        bg: active ? 'oklch(0.55 0.08 45)' : 'oklch(0.98 0.008 75)',
+        fg: active ? 'oklch(0.98 0.01 70)' : 'oklch(0.4 0.02 55)',
+        borderColor: active ? 'oklch(0.55 0.08 45)' : 'oklch(0.85 0.015 75)',
+      };
+    });
+
+    const activeTodoItems = s.todos[s.activeTodoPerson].map((item, idx) => ({
+      text: item.text, done: item.done,
+      onToggle: () => this.toggleTodo(s.activeTodoPerson, idx),
+      color: item.done ? 'oklch(0.6 0.01 55)' : 'oklch(0.3 0.015 55)',
+      strike: item.done ? 'line-through' : 'none',
+    }));
+
+    const actionItems = s.actionItems.map((item, idx) => ({
+      text: item.text, done: item.done,
+      onToggle: () => this.toggleAction(idx),
+      color: item.done ? 'oklch(0.6 0.01 55)' : 'oklch(0.3 0.015 55)',
+      strike: item.done ? 'line-through' : 'none',
+    }));
+
+    const actionDoneCount = s.actionItems.filter(a => a.done).length;
+    const actionTotalCount = s.actionItems.length;
+
+    const heroStrength = (this.props.heroOverlay ?? 45) / 100;
+
+    return {
+      tabs,
+      isItinerary: s.activeTab === 'itinerary',
+      isPlaces: s.activeTab === 'places',
+      isTravelers: s.activeTab === 'travelers',
+      isFlights: s.activeTab === 'flights',
+      isTodo: s.activeTab === 'todo',
+      isAction: s.activeTab === 'action',
+      state_easyOnly: s.easyOnly,
+      toggleEasyOnly: () => this.setState(st => ({ easyOnly: !st.easyOnly })),
+      days,
+      placeGroups,
+      travelers,
+      flights,
+      todoPeople,
+      activeTodoItems,
+      actionItems,
+      actionDoneCount,
+      actionTotalCount,
+      actionProgressPct: actionTotalCount ? `${Math.round(100 * actionDoneCount / actionTotalCount)}%` : '0%',
+      heroOverlay: heroStrength * 0.6,
+      heroOverlayStrong: heroStrength * 0.95,
+    };
+  }
+}
+</script>
+</body>
+</html>
