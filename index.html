@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Japan + Korea Family Trip 2026</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <h1 id="trip-title">Trip</h1>
+      <div class="subtitle" id="trip-subtitle"></div>
+      <div class="dates" id="trip-dates"></div>
+    </div>
+    <div class="header-controls">
+      <button id="edit-toggle">Edit mode</button>
+      <button id="export-btn">Export data</button>
+      <label class="file-input-label">
+        <input type="file" id="import-input" accept="application/json" />
+        <span class="btn" style="display:inline-block;">Import data</span>
+      </label>
+      <button id="reset-btn">Reset to published</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner">
+    <button data-tab="itinerary" class="active">Itinerary</button>
+    <button data-tab="places">Places</button>
+    <button data-tab="travelers">Travelers</button>
+    <button data-tab="flights">Flights</button>
+    <button data-tab="todos">To-Do by Person</button>
+    <button data-tab="actions">Action Items</button>
+    <button data-tab="timeline">Prep Timeline</button>
+  </div>
+</nav>
+
+<main>
+
+  <div class="panel active" id="panel-itinerary">
+    <div class="legend">
+      <span><span class="tag tag-easy">Easy pace</span> good for elders / Emma / Duke / Michelle</span>
+      <span><span class="tag tag-active">Active</span></span>
+      <span><span class="tag tag-foodie">Foodie</span></span>
+      <span><span class="tag tag-travel">Travel</span></span>
+      <span><span class="tag tag-own">On your own</span></span>
+      <button id="highlight-toggle" style="margin-left:auto;background:#fff;border:1px solid var(--line);color:var(--ink);">Highlight easy-pace options</button>
+    </div>
+    <div id="itinerary-list"></div>
+  </div>
+
+  <div class="panel" id="panel-places">
+    <section class="section-block">
+      <h2>Places & Links</h2>
+      <p class="hint">Automatically pulled from the itinerary — click a place to open it in Google Maps.</p>
+      <div id="places-list"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-travelers">
+    <section class="section-block">
+      <h2>Who's Going</h2>
+      <p class="hint">Turn on Edit mode to fill in real contact details.</p>
+      <div class="people-grid" id="travelers-grid"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-flights">
+    <section class="section-block">
+      <h2>Flight Itineraries</h2>
+      <p class="hint">Placeholders — fill in real confirmation numbers and times in Edit mode.</p>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Date</th><th>Route</th><th>Travelers</th><th>Airline</th><th>Flight #</th><th>Depart</th><th>Arrive</th><th>Confirmation #</th><th>Notes</th></tr></thead>
+          <tbody id="flights-body"></tbody>
+        </table>
+      </div>
+      <div id="flights-add-wrap"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-todos">
+    <section class="section-block">
+      <h2>To-Do List by Person</h2>
+      <div class="person-tabs" id="person-tabs"></div>
+      <div id="todo-list"></div>
+      <div id="todo-add-wrap"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-actions">
+    <section class="section-block">
+      <h2>Action Items</h2>
+      <p class="hint">Trip-wide bookings and logistics that need to get done.</p>
+      <div id="action-list"></div>
+      <div id="action-add-wrap"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-timeline">
+    <section class="section-block">
+      <h2>Prep Timeline</h2>
+      <p class="hint">From packing and the ride to the airport, through the trip, to getting home.</p>
+      <ul class="checklist" id="timeline-list"></ul>
+      <div id="timeline-add-wrap"></div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  Built for the trip — edits you make in Edit mode are saved in this browser. Use Export/Import to move changes between devices.
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
