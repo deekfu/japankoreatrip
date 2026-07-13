@@ -70,6 +70,22 @@ button, .btn {
 .header-controls button:hover { background: rgba(255,255,255,0.25); }
 .header-controls button.active-toggle { background: #fff; color: var(--accent-dark); border-color: #fff; font-weight: 600; }
 
+.hero-image {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+}
+
+.section-divider {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+
 nav.tabs {
   background: var(--card);
   border-bottom: 1px solid var(--line);
