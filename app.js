@@ -84,6 +84,7 @@ function renderAll() {
   renderTodos();
   renderActionItems();
   renderTimeline();
+  renderParkingLot();
 }
 
 function toggleEditMode() {
@@ -825,5 +826,26 @@ function renderBookings() {
       renderBookings();
     });
     addWrap.appendChild(btn);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* PARKING LOT ITEMS (loose ideas / things to figure out later)               */
+/* -------------------------------------------------------------------------- */
+
+function renderParkingLot() {
+  const root = document.getElementById("parking-lot-list");
+  renderChecklist(root, trip.parkingLot, {
+    onToggle: (i) => { trip.parkingLot[i].done = !trip.parkingLot[i].done; saveTrip(); renderParkingLot(); },
+    onDelete: (i) => { trip.parkingLot.splice(i, 1); saveTrip(); renderParkingLot(); }
+  });
+  const addWrap = document.getElementById("parking-lot-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    addWrap.appendChild(buildAddRow("Add a parking lot item…", (text) => {
+      trip.parkingLot.push({ text, done: false });
+      saveTrip();
+      renderParkingLot();
+    }));
   }
 }
