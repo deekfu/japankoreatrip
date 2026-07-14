@@ -34,7 +34,8 @@ const DEFAULT_TRIP = {
     { id: "duke",     name: "Duke",     role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "Traveling with Emma" },
     { id: "michelle", name: "Michelle", role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "Traveling with Emma" },
     { id: "mary",     name: "Mary",     role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "" },
-    { id: "aunt",     name: "Aunt",     role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "" },
+    { id: "aunt",     name: "Lan",      role: "Aunt", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "" },
+    { id: "tony",     name: "Tony",     role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "emma",     name: "Emma",     role: "Toddler", easyPace: true, email: "", phone: "", whatsapp: "", notes: "Bring stroller/carrier" }
   ],
 
@@ -47,6 +48,21 @@ const DEFAULT_TRIP = {
     { id: "f3", date: "2026-11-09", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Flying straight to Osaka instead of backtracking through Tokyo" },
     { id: "f4", date: "2026-11-17", route: "Tokyo (Narita, NRT) → LAX", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Departure must be out of Narita" }
   ],
+
+  // ------------------------------------------------------------------------
+  // HOTEL BOOKINGS (fill in as reservations are confirmed)
+  // ------------------------------------------------------------------------
+  hotelBookings: [],
+
+  // ------------------------------------------------------------------------
+  // FLIGHT BOOKINGS (fill in as reservations are confirmed)
+  // ------------------------------------------------------------------------
+  flightBookings: [],
+
+  // ------------------------------------------------------------------------
+  // BOOKINGS (general log of what's been booked and what it cost)
+  // ------------------------------------------------------------------------
+  bookings: [],
 
   // ------------------------------------------------------------------------
   // ITINERARY — each day has morning / lunch / afternoon / dinner / night
@@ -498,6 +514,7 @@ const DEFAULT_TRIP = {
     michelle: [ { text: "Pack Emma's medications / snacks / entertainment", done: false }, { text: "Check passport expiration (Emma's too)", done: false } ],
     mary:     [ { text: "Check passport expiration", done: false }, { text: "Pack comfortable walking shoes", done: false } ],
     aunt:     [ { text: "Check passport expiration", done: false }, { text: "Flag any mobility needs for daily planning", done: false } ],
+    tony:     [ { text: "Check passport expiration (6+ months validity)", done: false } ],
     emma:     [ { text: "Pack comfort items (favorite toy/blanket)", done: false } ]
   },
 
