@@ -78,6 +78,9 @@ function renderAll() {
   renderPlaces();
   renderTravelers();
   renderFlights();
+  renderHotelBookings();
+  renderFlightBookings();
+  renderBookings();
   renderTodos();
   renderActionItems();
   renderTimeline();
@@ -132,7 +135,7 @@ function resetToPublished() {
 
 /* ---------------------------------------------------------------------- */
 /* MODAL HELPER                                                           */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 
 function openModal(title, fields, onSave, onDelete) {
   const overlay = document.createElement("div");
@@ -146,6 +149,39 @@ function openModal(title, fields, onSave, onDelete) {
     const label = document.createElement("label");
     label.textContent = f.label;
     modal.appendChild(label);
+
+    if (f.type === "checkboxes") {
+      const wrap = document.createElement("div");
+      wrap.style.display = "flex";
+      wrap.style.flexWrap = "wrap";
+      wrap.style.gap = "6px";
+      wrap.style.margin = "4px 0 10px";
+      const selected = new Set(String(f.value || "").split(",").map(s => s.trim()).filter(Boolean));
+      const checks = [];
+      (f.options || []).forEach(opt => {
+        const optLabel = document.createElement("label");
+        optLabel.style.display = "inline-flex";
+        optLabel.style.alignItems = "center";
+        optLabel.style.gap = "4px";
+        optLabel.style.fontSize = "0.83rem";
+        optLabel.style.border = "1px solid var(--line)";
+        optLabel.style.borderRadius = "20px";
+        optLabel.style.padding = "4px 10px";
+        optLabel.style.textTransform = "none";
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = opt.value;
+        cb.checked = selected.has(opt.value);
+        optLabel.appendChild(cb);
+        optLabel.appendChild(document.createTextNode(opt.label));
+        wrap.appendChild(optLabel);
+        checks.push(cb);
+      });
+      modal.appendChild(wrap);
+      inputs[f.key] = { get value() { return checks.filter(c => c.checked).map(c => c.value).join(", "); } };
+      return;
+    }
+
     let input;
     if (f.type === "select") {
       input = document.createElement("select");
@@ -202,8 +238,8 @@ function openModal(title, fields, onSave, onDelete) {
 
 const TAG_OPTIONS = Object.keys(TAG_LABELS).map(k => ({ value: k, label: TAG_LABELS[k] }));
 
-/* ---------------------------------------------------------------------- */
-/* ITINERARY                                                               */
+/* ----------------------------------------------------------------------- */
+/* ITINERARY                                                              */
 /* ---------------------------------------------------------------------- */
 
 function renderItinerary() {
@@ -321,9 +357,9 @@ function openOptionModal(dayIdx, slotKey, optIdx) {
   });
 }
 
-/* ---------------------------------------------------------------------- */
-/* PLACES (auto-derived from itinerary, deduped)                          */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
+/* PLACES (auto-derived from itinerary, deduped)                         */
+/* ----------------------------------------------------------------------- */
 
 function renderPlaces() {
   const seen = new Map();
@@ -365,9 +401,9 @@ function renderPlaces() {
   });
 }
 
-/* ---------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------ */
 /* TRAVELERS                                                               */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 
 function renderTravelers() {
   const root = document.getElementById("travelers-grid");
@@ -396,9 +432,9 @@ function renderTravelers() {
   });
 }
 
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 /* FLIGHTS                                                                 */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 
 function renderFlights() {
   const tbody = document.getElementById("flights-body");
@@ -436,8 +472,8 @@ function renderFlights() {
 }
 
 /* ---------------------------------------------------------------------- */
-/* TO-DOS BY PERSON                                                        */
-/* ---------------------------------------------------------------------- */
+/* TO-DOS BY PERSON                                                 */
+/* ----------------------------------------------------------------------- */
 
 function renderTodos() {
   const tabsRoot = document.getElementById("person-tabs");
@@ -471,9 +507,9 @@ function renderTodos() {
   }
 }
 
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 /* ACTION ITEMS                                                            */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 
 function renderActionItems() {
   const root = document.getElementById("action-list");
@@ -493,9 +529,9 @@ function renderActionItems() {
   }
 }
 
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- -*/
 /* TIMELINE                                                                */
-/* ---------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------- */
 
 function renderTimeline() {
   const root = document.getElementById("timeline-list");
@@ -531,8 +567,8 @@ function renderTimeline() {
   }
 }
 
-/* ---------------------------------------------------------------------- */
-/* SHARED HELPERS                                                          */
+/* ----------------------------------------------------------------------- */
+/* SHARED HELPERS                                                         */
 /* ---------------------------------------------------------------------- */
 
 function renderChecklist(root, items, { onToggle, onDelete, showOwner }) {
@@ -589,4 +625,205 @@ function buildAddRow(placeholder, onAdd, includeWhen) {
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
   wrap.appendChild(btn);
   return wrap;
+}
+
+/* --------------------------------------------------------------------------- */
+/* HOTEL BOOKINGS                                                              */
+/* --------------------------------------------------------------------------- */
+
+function renderHotelBookings() {
+  const root = document.getElementById("hotel-bookings-grid");
+  root.innerHTML = "";
+  trip.hotelBookings.forEach((h, idx) => {
+    const card = document.createElement("div");
+    card.className = "person-card";
+    card.innerHTML = `
+      <h3>${esc(h.name) || "Untitled hotel"}</h3>
+      <div class="person-role">${esc(h.cityAddress || "")}</div>
+      <div class="field"><label>Contact</label>${h.contact ? esc(h.contact) : "<em>—</em>"}</div>
+      <div class="field"><label>Check-in</label>${h.checkIn ? esc(h.checkIn) : "<em>—</em>"}</div>
+      <div class="field"><label>Check-out</label>${h.checkOut ? esc(h.checkOut) : "<em>—</em>"}</div>
+      <div class="field"><label># of Nights</label>${h.nights ? esc(h.nights) : "<em>—</em>"}</div>
+      <div class="field"><label>Confirmation #</label>${h.confirmation ? esc(h.confirmation) : "<em>—</em>"}</div>
+      <div class="field"><label>Website</label>${h.website ? `<a href="${esc(h.website)}" target="_blank" rel="noopener">${esc(h.website)}</a>` : "<em>—</em>"}</div>
+      <div class="opt-actions edit-only" style="margin-top:8px;">
+        <button title="Edit">Edit</button>
+      </div>
+    `;
+    card.querySelector(".opt-actions button").addEventListener("click", () => openHotelBookingModal(idx));
+    root.appendChild(card);
+  });
+
+  const addWrap = document.getElementById("hotel-bookings-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    const btn = document.createElement("button");
+    btn.className = "add-option-btn";
+    btn.textContent = "+ Add hotel booking";
+    btn.addEventListener("click", () => openHotelBookingModal(null));
+    addWrap.appendChild(btn);
+  }
+}
+
+function openHotelBookingModal(idx) {
+  const isNew = idx === null;
+  const h = isNew ? { name: "", cityAddress: "", contact: "", checkIn: "", checkOut: "", nights: "", confirmation: "", website: "" } : trip.hotelBookings[idx];
+  openModal(isNew ? "Add hotel booking" : "Edit hotel booking", [
+    { key: "name", label: "Hotel name", value: h.name },
+    { key: "cityAddress", label: "Hotel city / address & contact info", value: h.cityAddress },
+    { key: "contact", label: "Contact info", value: h.contact },
+    { key: "checkIn", label: "Check-in date", type: "date", value: h.checkIn },
+    { key: "checkOut", label: "Check-out date", type: "date", value: h.checkOut },
+    { key: "nights", label: "# of nights", value: h.nights },
+    { key: "confirmation", label: "Confirmation #", value: h.confirmation },
+    { key: "website", label: "Link to website", value: h.website }
+  ], (values) => {
+    const newH = { name: values.name, cityAddress: values.cityAddress, contact: values.contact, checkIn: values.checkIn, checkOut: values.checkOut, nights: values.nights, confirmation: values.confirmation, website: values.website };
+    if (isNew) trip.hotelBookings.push(newH);
+    else trip.hotelBookings[idx] = newH;
+    saveTrip();
+    renderHotelBookings();
+  }, isNew ? null : () => {
+    trip.hotelBookings.splice(idx, 1);
+    saveTrip();
+    renderHotelBookings();
+  });
+}
+
+/* --------------------------------------------------------------------------- */
+/* FLIGHT BOOKINGS                                                             */
+/* --------------------------------------------------------------------------- */
+
+function renderFlightBookings() {
+  const root = document.getElementById("flight-bookings-grid");
+  root.innerHTML = "";
+  trip.flightBookings.forEach((f, idx) => {
+    const card = document.createElement("div");
+    card.className = "person-card";
+    card.innerHTML = `
+      <h3>${esc(f.depCity) || "?"} → ${esc(f.arrCity) || "?"}</h3>
+      <div class="person-role">${esc(f.date || "")}</div>
+      <div class="field"><label>Departs</label>${f.depCity ? esc(f.depCity) : "<em>—</em>"}${f.depTime ? " at " + esc(f.depTime) : ""}</div>
+      <div class="field"><label>Arrives</label>${f.arrCity ? esc(f.arrCity) : "<em>—</em>"}${f.arrTime ? " at " + esc(f.arrTime) : ""}</div>
+      <div class="field"><label>Confirmation #</label>${f.confirmation ? esc(f.confirmation) : "<em>—</em>"}</div>
+      <div class="field"><label>Travelers</label>${f.travelers ? esc(f.travelers) : "<em>—</em>"}</div>
+      <div class="opt-actions edit-only" style="margin-top:8px;">
+        <button title="Edit">Edit</button>
+      </div>
+    `;
+    card.querySelector(".opt-actions button").addEventListener("click", () => openFlightBookingModal(idx));
+    root.appendChild(card);
+  });
+
+  const addWrap = document.getElementById("flight-bookings-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    const btn = document.createElement("button");
+    btn.className = "add-option-btn";
+    btn.textContent = "+ Add flight booking";
+    btn.addEventListener("click", () => openFlightBookingModal(null));
+    addWrap.appendChild(btn);
+  }
+}
+
+function openFlightBookingModal(idx) {
+  const isNew = idx === null;
+  const f = isNew ? { date: "", depCity: "", depTime: "", arrCity: "", arrTime: "", confirmation: "", travelers: "" } : trip.flightBookings[idx];
+  const travelerOptions = trip.travelers.map(t => ({ value: t.name, label: t.name }));
+  openModal(isNew ? "Add flight booking" : "Edit flight booking", [
+    { key: "date", label: "Date of flight", type: "date", value: f.date },
+    { key: "depCity", label: "City of departure", value: f.depCity },
+    { key: "depTime", label: "Time of departure", type: "time", value: f.depTime },
+    { key: "arrCity", label: "City of arrival", value: f.arrCity },
+    { key: "arrTime", label: "Time of arrival", type: "time", value: f.arrTime },
+    { key: "confirmation", label: "Confirmation #", value: f.confirmation },
+    { key: "travelers", label: "Travelers", type: "checkboxes", options: travelerOptions, value: f.travelers }
+  ], (values) => {
+    const newF = { date: values.date, depCity: values.depCity, depTime: values.depTime, arrCity: values.arrCity, arrTime: values.arrTime, confirmation: values.confirmation, travelers: values.travelers };
+    if (isNew) trip.flightBookings.push(newF);
+    else trip.flightBookings[idx] = newF;
+    saveTrip();
+    renderFlightBookings();
+  }, isNew ? null : () => {
+    trip.flightBookings.splice(idx, 1);
+    saveTrip();
+    renderFlightBookings();
+  });
+}
+
+/* --------------------------------------------------------------------------- */
+/* BOOKINGS (general cost log)                                                 */
+/* --------------------------------------------------------------------------- */
+
+const BOOKING_TYPES = ["Flight", "Hotel", "Transportation", "Other"];
+
+function renderBookings() {
+  const tbody = document.getElementById("bookings-body");
+  tbody.innerHTML = "";
+  trip.bookings.forEach((b, idx) => {
+    const tr = document.createElement("tr");
+
+    const cityTd = document.createElement("td");
+    cityTd.dataset.label = "City";
+    cityTd.innerHTML = editMode ? `<input data-f="city" value="${esc(b.city)}"/>` : (esc(b.city) || "—");
+    tr.appendChild(cityTd);
+
+    const typeTd = document.createElement("td");
+    typeTd.dataset.label = "Type";
+    if (editMode) {
+      const sel = document.createElement("select");
+      BOOKING_TYPES.forEach(opt => {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        if (opt === b.type) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", () => { trip.bookings[idx].type = sel.value; saveTrip(); });
+      typeTd.appendChild(sel);
+    } else {
+      typeTd.textContent = b.type || "—";
+    }
+    tr.appendChild(typeTd);
+
+    const nameTd = document.createElement("td");
+    nameTd.dataset.label = "Name";
+    nameTd.innerHTML = editMode ? `<input data-f="name" value="${esc(b.name)}"/>` : (esc(b.name) || "—");
+    tr.appendChild(nameTd);
+
+    const priceTd = document.createElement("td");
+    priceTd.dataset.label = "Price";
+    priceTd.innerHTML = editMode ? `<input data-f="price" value="${esc(b.price)}"/>` : (esc(b.price) || "—");
+    tr.appendChild(priceTd);
+
+    if (editMode) {
+      const delTd = document.createElement("td");
+      const delBtn = document.createElement("button");
+      delBtn.className = "item-del";
+      delBtn.textContent = "✕";
+      delBtn.addEventListener("click", () => { trip.bookings.splice(idx, 1); saveTrip(); renderBookings(); });
+      delTd.appendChild(delBtn);
+      tr.appendChild(delTd);
+
+      tr.querySelectorAll('input[data-f]').forEach(inp => {
+        inp.addEventListener("change", () => { trip.bookings[idx][inp.dataset.f] = inp.value; saveTrip(); });
+      });
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  const addWrap = document.getElementById("bookings-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    const btn = document.createElement("button");
+    btn.className = "add-option-btn";
+    btn.textContent = "+ Add booking";
+    btn.addEventListener("click", () => {
+      trip.bookings.push({ city: "", type: "Flight", name: "", price: "" });
+      saveTrip();
+      renderBookings();
+    });
+    addWrap.appendChild(btn);
+  }
 }
