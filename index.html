@@ -35,9 +35,12 @@
     <button data-tab="places">Places</button>
     <button data-tab="travelers">Travelers</button>
     <button data-tab="flights">Flights</button>
+    <button data-tab="hotelbookings">Hotel Bookings</button>
+    <button data-tab="flightbookings">Flight Bookings</button>
     <button data-tab="todos">To-Do by Person</button>
     <button data-tab="actions">Action Items</button>
     <button data-tab="timeline">Prep Timeline</button>
+    <button data-tab="bookings">Bookings</button>
   </div>
 </nav>
 
@@ -88,6 +91,26 @@
     </section>
   </div>
 
+  <div class="panel" id="panel-hotelbookings">
+    <img src="assets/hotel-bookings-header.png" alt="" class="section-divider" />
+    <section class="section-block">
+      <h2>Hotel Bookings</h2>
+      <p class="hint">Confirmed hotel stays for the group.</p>
+      <div class="people-grid" id="hotel-bookings-grid"></div>
+      <div id="hotel-bookings-add-wrap" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-flightbookings">
+    <img src="assets/flight-bookings-header.png" alt="" class="section-divider" />
+    <section class="section-block">
+      <h2>Flight Bookings</h2>
+      <p class="hint">Confirmed flight bookings and who's on each one.</p>
+      <div class="people-grid" id="flight-bookings-grid"></div>
+      <div id="flight-bookings-add-wrap" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
   <div class="panel" id="panel-todos">
     <section class="section-block">
       <h2>To-Do List by Person</h2>
@@ -112,6 +135,20 @@
       <p class="hint">From packing and the ride to the airport, through the trip, to getting home.</p>
       <ul class="checklist" id="timeline-list"></ul>
       <div id="timeline-add-wrap"></div>
+    </section>
+  </div>
+
+  <div class="panel" id="panel-bookings">
+    <section class="section-block">
+      <h2>Bookings</h2>
+      <p class="hint">Quick log of what's been booked and what it cost.</p>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>City</th><th>Type</th><th>Name</th><th>Price</th><th></th></tr></thead>
+          <tbody id="bookings-body"></tbody>
+        </table>
+      </div>
+      <div id="bookings-add-wrap"></div>
     </section>
   </div>
 
