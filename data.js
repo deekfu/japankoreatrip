@@ -40,16 +40,6 @@ const DEFAULT_TRIP = {
   ],
 
   // ------------------------------------------------------------------------
-  // FLIGHTS (placeholders — fill in real confirmation numbers / times)
-  // ------------------------------------------------------------------------
-  flights: [
-    { id: "f1", date: "2026-11-03", route: "LAX → Tokyo (Narita, NRT)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Overnight flight" },
-    { id: "f2", date: "2026-11-05", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", travelers: "All 10", airline: "ZIPAIR Tokyo", flightNo: "", depart: "08:55", arrive: "11:35", confirmation: "", notes: "Example booking found: ZIPAIR NRT→ICN, non-stop, 2h40m, ~$239 total for the multi-city pair with the return leg below" },
-    { id: "f3", date: "2026-11-08", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "Peach Aviation", flightNo: "", depart: "15:05", arrive: "16:50", confirmation: "", notes: "Example booking found: Peach Aviation ICN→KIX, non-stop, 1h45m — booked as separate ticket alongside the ZIPAIR leg" },
-    { id: "f4", date: "2026-11-17", route: "Tokyo (Narita, NRT) → LAX", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Departure must be out of Narita" }
-  ],
-
-  // ------------------------------------------------------------------------
   // HOTEL BOOKINGS (fill in as reservations are confirmed)
   // ------------------------------------------------------------------------
   hotelBookings: [
@@ -60,7 +50,12 @@ const DEFAULT_TRIP = {
   // ------------------------------------------------------------------------
   // FLIGHT BOOKINGS (fill in as reservations are confirmed)
   // ------------------------------------------------------------------------
-  flightBookings: [],
+  flightBookings: [
+    { date: "2026-11-03", route: "LAX → Tokyo (Narita, NRT)", airline: "", flightNo: "", depart: "", arrive: "", travelers: "All 10" },
+    { date: "2026-11-05", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", airline: "ZIPAIR Tokyo", flightNo: "", depart: "08:55", arrive: "11:35", travelers: "All 10" },
+    { date: "2026-11-08", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", airline: "Peach Aviation", flightNo: "", depart: "15:05", arrive: "16:50", travelers: "All 10" },
+    { date: "2026-11-17", route: "Tokyo (Narita, NRT) → LAX", airline: "", flightNo: "", depart: "", arrive: "", travelers: "All 10" }
+  ],
 
   // ------------------------------------------------------------------------
   // BOOKINGS (general log of what's been booked and what it cost)
