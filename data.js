@@ -26,7 +26,7 @@ const DEFAULT_TRIP = {
   // TRAVELERS
   // ------------------------------------------------------------------------
   travelers: [
-    { id: "dave",     name: "Dave",     role: "Trip organizer", easyPace: false, email: "dkeschner@gmail.com", phone: "", whatsapp: "", notes: "" },
+    { id: "dave",     name: "Dave",     role: "Trip organizer", easyPace: false, email: "dkeschner@gmail.com", phone: "9492286697", whatsapp: "", notes: "" },
     { id: "linda",    name: "Linda",    role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "leah",     name: "Leah",     role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "brian",    name: "Briann",   role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
