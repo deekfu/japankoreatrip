@@ -34,7 +34,6 @@
     <button data-tab="itinerary" class="active">Itinerary</button>
     <button data-tab="places">Places</button>
     <button data-tab="travelers">Travelers</button>
-    <button data-tab="flights">Flights</button>
     <button data-tab="hotelbookings">Hotel Bookings</button>
     <button data-tab="flightbookings">Flight Bookings</button>
     <button data-tab="todos">To-Do by Person</button>
@@ -77,21 +76,6 @@
     </section>
   </div>
 
-  <div class="panel" id="panel-flights">
-    <img src="assets/flights-divider.png" alt="" class="section-divider" />
-    <section class="section-block">
-      <h2>Flight Itineraries</h2>
-      <p class="hint">Placeholders — fill in real confirmation numbers and times in Edit mode.</p>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead><tr><th>Date</th><th>Route</th><th>Travelers</th><th>Airline</th><th>Flight #</th><th>Depart</th><th>Arrive</th><th>Confirmation #</th><th>Notes</th></tr></thead>
-          <tbody id="flights-body"></tbody>
-        </table>
-      </div>
-      <div id="flights-add-wrap"></div>
-    </section>
-  </div>
-
   <div class="panel" id="panel-hotelbookings">
     <img src="assets/hotel-bookings-header.png" alt="" class="section-divider" />
     <section class="section-block">
@@ -106,7 +90,7 @@
     <img src="assets/flight-bookings-header.png" alt="" class="section-divider" />
     <section class="section-block">
       <h2>Flight Bookings</h2>
-      <p class="hint">Confirmed flight bookings and who's on each one.</p>
+      <p class="hint">Confirmed flights and who's on each one.</p>
       <div class="people-grid" id="flight-bookings-grid"></div>
       <div id="flight-bookings-add-wrap" style="margin-top:12px;"></div>
     </section>
