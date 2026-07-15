@@ -77,7 +77,6 @@ function renderAll() {
   renderItinerary();
   renderPlaces();
   renderTravelers();
-  renderFlights();
   renderHotelBookings();
   renderFlightBookings();
   renderBookings();
@@ -436,42 +435,226 @@ function renderTravelers() {
   });
 }
 
-/* ----------------------------------------------------------------------- */
-/* FLIGHTS                                                                 */
-/* ----------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+/* HOTEL BOOKINGS                                                              */
+/* --------------------------------------------------------------------------- */
 
-function renderFlights() {
-  const tbody = document.getElementById("flights-body");
-  tbody.innerHTML = "";
-  trip.flights.forEach((f, idx) => {
-    const tr = document.createElement("tr");
-    const cols = ["date", "route", "travelers", "airline", "flightNo", "depart", "arrive", "confirmation", "notes"];
-    const labels = { date: "Date", route: "Route", travelers: "Travelers", airline: "Airline", flightNo: "Flight #", depart: "Depart", arrive: "Arrive", confirmation: "Confirmation #", notes: "Notes" };
-    tr.innerHTML = cols.map(c => `<td data-label="${labels[c]}">${editMode ? `<input data-f="${c}" value="${esc(f[c])}"/>` : esc(f[c]) || "—"}</td>`).join("") +
-      (editMode ? `<td><button class="item-del">✕</button></td>` : "");
-    if (editMode) {
-      tr.querySelectorAll("input[data-f]").forEach(inp => {
-        inp.addEventListener("change", () => { trip.flights[idx][inp.dataset.f] = inp.value; saveTrip(); });
-      });
-      tr.querySelector(".item-del").addEventListener("click", () => {
-        trip.flights.splice(idx, 1); saveTrip(); renderFlights();
-      });
-    }
-    tbody.appendChild(tr);
+function renderHotelBookings() {
+  const root = document.getElementById("hotel-bookings-grid");
+  root.innerHTML = "";
+  trip.hotelBookings.forEach((h, idx) => {
+    const card = document.createElement("div");
+    card.className = "person-card";
+    card.innerHTML = `
+      <h3>${esc(h.name) || "Untitled hotel"}</h3>
+      <div class="person-role">${esc(h.cityAddress || "")}</div>
+      <div class="field"><label>Contact</label>${h.contact ? esc(h.contact) : "<em>—</em>"}</div>
+      <div class="field"><label>Check-in</label>${h.checkIn ? esc(h.checkIn) : "<em>—</em>"}</div>
+      <div class="field"><label>Check-out</label>${h.checkOut ? esc(h.checkOut) : "<em>—</em>"}</div>
+      <div class="field"><label># of Nights</label>${h.nights ? esc(h.nights) : "<em>—</em>"}</div>
+      <div class="field"><label>Confirmation #</label>${h.confirmation ? esc(h.confirmation) : "<em>—</em>"}</div>
+      <div class="field"><label>Website</label>${h.website ? `<a href="${esc(h.website)}" target="_blank" rel="noopener">${esc(h.website)}</a>` : "<em>—</em>"}</div>
+      <div class="opt-actions edit-only" style="margin-top:8px;">
+        <button title="Edit">Edit</button>
+      </div>
+    `;
+    card.querySelector(".opt-actions button").addEventListener("click", () => openHotelBookingModal(idx));
+    root.appendChild(card);
   });
 
-  const addWrap = document.getElementById("flights-add-wrap");
+  const addWrap = document.getElementById("hotel-bookings-add-wrap");
   addWrap.innerHTML = "";
   if (editMode) {
     const btn = document.createElement("button");
     btn.className = "add-option-btn";
-    btn.textContent = "+ Add flight";
+    btn.textContent = "+ Add hotel booking";
+    btn.addEventListener("click", () => openHotelBookingModal(null));
+    addWrap.appendChild(btn);
+  }
+}
+
+function openHotelBookingModal(idx) {
+  const isNew = idx === null;
+  const h = isNew ? { name: "", cityAddress: "", contact: "", checkIn: "", checkOut: "", nights: "", confirmation: "", website: "" } : trip.hotelBookings[idx];
+  openModal(isNew ? "Add hotel booking" : "Edit hotel booking", [
+    { key: "name", label: "Hotel name", value: h.name },
+    { key: "cityAddress", label: "Hotel city / address & contact info", value: h.cityAddress },
+    { key: "contact", label: "Contact info", value: h.contact },
+    { key: "checkIn", label: "Check-in date", type: "date", value: h.checkIn },
+    { key: "checkOut", label: "Check-out date", type: "date", value: h.checkOut },
+    { key: "nights", label: "# of nights", value: h.nights },
+    { key: "confirmation", label: "Confirmation #", value: h.confirmation },
+    { key: "website", label: "Link to website", value: h.website }
+  ], (values) => {
+    const newH = { name: values.name, cityAddress: values.cityAddress, contact: values.contact, checkIn: values.checkIn, checkOut: values.checkOut, nights: values.nights, confirmation: values.confirmation, website: values.website };
+    if (isNew) trip.hotelBookings.push(newH);
+    else trip.hotelBookings[idx] = newH;
+    saveTrip();
+    renderHotelBookings();
+  }, isNew ? null : () => {
+    trip.hotelBookings.splice(idx, 1);
+    saveTrip();
+    renderHotelBookings();
+  });
+}
+
+/* --------------------------------------------------------------------------- */
+/* FLIGHT BOOKINGS                                                             */
+/* --------------------------------------------------------------------------- */
+
+function renderFlightBookings() {
+  const root = document.getElementById("flight-bookings-grid");
+  root.innerHTML = "";
+  trip.flightBookings.forEach((f, idx) => {
+    const card = document.createElement("div");
+    card.className = "person-card";
+    card.innerHTML = `
+      <h3>${esc(f.route) || "Flight"}</h3>
+      <div class="person-role">${esc(f.date || "")}</div>
+      <div class="field"><label>Airline</label>${f.airline ? esc(f.airline) : "<em>—</em>"}</div>
+      <div class="field"><label>Flight Number</label>${f.flightNo ? esc(f.flightNo) : "<em>—</em>"}</div>
+      <div class="field"><label>Departure</label>${f.depart ? esc(f.depart) : "<em>—</em>"}</div>
+      <div class="field"><label>Arrival</label>${f.arrive ? esc(f.arrive) : "<em>—</em>"}</div>
+      <div class="field"><label>Travelers</label>${f.travelers ? esc(f.travelers) : "<em>—</em>"}</div>
+      <div class="opt-actions edit-only" style="margin-top:8px;">
+        <button title="Edit">Edit</button>
+      </div>
+    `;
+    card.querySelector(".opt-actions button").addEventListener("click", () => openFlightBookingModal(idx));
+    root.appendChild(card);
+  });
+
+  const addWrap = document.getElementById("flight-bookings-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    const btn = document.createElement("button");
+    btn.className = "add-option-btn";
+    btn.textContent = "+ Add flight booking";
+    btn.addEventListener("click", () => openFlightBookingModal(null));
+    addWrap.appendChild(btn);
+  }
+}
+
+function openFlightBookingModal(idx) {
+  const isNew = idx === null;
+  const f = isNew ? { date: "", route: "", airline: "", flightNo: "", depart: "", arrive: "", travelers: "" } : trip.flightBookings[idx];
+  const travelerOptions = trip.travelers.map(t => ({ value: t.name, label: t.name }));
+  openModal(isNew ? "Add flight booking" : "Edit flight booking", [
+    { key: "route", label: "Route", value: f.route },
+    { key: "date", label: "Date of flight", type: "date", value: f.date },
+    { key: "airline", label: "Airline", value: f.airline },
+    { key: "flightNo", label: "Flight number", value: f.flightNo },
+    { key: "depart", label: "Time of departure", type: "time", value: f.depart },
+    { key: "arrive", label: "Time of arrival", type: "time", value: f.arrive },
+    { key: "travelers", label: "Travelers", type: "checkboxes", options: travelerOptions, value: f.travelers }
+  ], (values) => {
+    const newF = { date: values.date, route: values.route, airline: values.airline, flightNo: values.flightNo, depart: values.depart, arrive: values.arrive, travelers: values.travelers };
+    if (isNew) trip.flightBookings.push(newF);
+    else trip.flightBookings[idx] = newF;
+    saveTrip();
+    renderFlightBookings();
+  }, isNew ? null : () => {
+    trip.flightBookings.splice(idx, 1);
+    saveTrip();
+    renderFlightBookings();
+  });
+}
+
+/* --------------------------------------------------------------------------- */
+/* BOOKINGS (general cost log)                                                 */
+/* --------------------------------------------------------------------------- */
+
+const BOOKING_TYPES = ["Flight", "Hotel", "Transportation", "Other"];
+
+function renderBookings() {
+  const tbody = document.getElementById("bookings-body");
+  tbody.innerHTML = "";
+  trip.bookings.forEach((b, idx) => {
+    const tr = document.createElement("tr");
+
+    const cityTd = document.createElement("td");
+    cityTd.dataset.label = "City";
+    cityTd.innerHTML = editMode ? `<input data-f="city" value="${esc(b.city)}"/>` : (esc(b.city) || "—");
+    tr.appendChild(cityTd);
+
+    const typeTd = document.createElement("td");
+    typeTd.dataset.label = "Type";
+    if (editMode) {
+      const sel = document.createElement("select");
+      BOOKING_TYPES.forEach(opt => {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        if (opt === b.type) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", () => { trip.bookings[idx].type = sel.value; saveTrip(); });
+      typeTd.appendChild(sel);
+    } else {
+      typeTd.textContent = b.type || "—";
+    }
+    tr.appendChild(typeTd);
+
+    const nameTd = document.createElement("td");
+    nameTd.dataset.label = "Name";
+    nameTd.innerHTML = editMode ? `<input data-f="name" value="${esc(b.name)}"/>` : (esc(b.name) || "—");
+    tr.appendChild(nameTd);
+
+    const priceTd = document.createElement("td");
+    priceTd.dataset.label = "Price";
+    priceTd.innerHTML = editMode ? `<input data-f="price" value="${esc(b.price)}"/>` : (esc(b.price) || "—");
+    tr.appendChild(priceTd);
+
+    if (editMode) {
+      const delTd = document.createElement("td");
+      const delBtn = document.createElement("button");
+      delBtn.className = "item-del";
+      delBtn.textContent = "✕";
+      delBtn.addEventListener("click", () => { trip.bookings.splice(idx, 1); saveTrip(); renderBookings(); });
+      delTd.appendChild(delBtn);
+      tr.appendChild(delTd);
+
+      tr.querySelectorAll('input[data-f]').forEach(inp => {
+        inp.addEventListener("change", () => { trip.bookings[idx][inp.dataset.f] = inp.value; saveTrip(); });
+      });
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  const addWrap = document.getElementById("bookings-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    const btn = document.createElement("button");
+    btn.className = "add-option-btn";
+    btn.textContent = "+ Add booking";
     btn.addEventListener("click", () => {
-      trip.flights.push({ id: "f" + Date.now(), date: "", route: "", travelers: "", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "" });
+      trip.bookings.push({ city: "", type: "Flight", name: "", price: "" });
       saveTrip();
-      renderFlights();
+      renderBookings();
     });
     addWrap.appendChild(btn);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* PARKING LOT ITEMS (loose ideas / things to figure out later)               */
+/* -------------------------------------------------------------------------- */
+
+function renderParkingLot() {
+  const root = document.getElementById("parking-lot-list");
+  renderChecklist(root, trip.parkingLot, {
+    onToggle: (i) => { trip.parkingLot[i].done = !trip.parkingLot[i].done; saveTrip(); renderParkingLot(); },
+    onDelete: (i) => { trip.parkingLot.splice(i, 1); saveTrip(); renderParkingLot(); }
+  });
+  const addWrap = document.getElementById("parking-lot-add-wrap");
+  addWrap.innerHTML = "";
+  if (editMode) {
+    addWrap.appendChild(buildAddRow("Add a parking lot item…", (text) => {
+      trip.parkingLot.push({ text, done: false });
+      saveTrip();
+      renderParkingLot();
+    }));
   }
 }
 
@@ -629,226 +812,4 @@ function buildAddRow(placeholder, onAdd, includeWhen) {
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
   wrap.appendChild(btn);
   return wrap;
-}
-
-/* --------------------------------------------------------------------------- */
-/* HOTEL BOOKINGS                                                              */
-/* --------------------------------------------------------------------------- */
-
-function renderHotelBookings() {
-  const root = document.getElementById("hotel-bookings-grid");
-  root.innerHTML = "";
-  trip.hotelBookings.forEach((h, idx) => {
-    const card = document.createElement("div");
-    card.className = "person-card";
-    card.innerHTML = `
-      <h3>${esc(h.name) || "Untitled hotel"}</h3>
-      <div class="person-role">${esc(h.cityAddress || "")}</div>
-      <div class="field"><label>Contact</label>${h.contact ? esc(h.contact) : "<em>—</em>"}</div>
-      <div class="field"><label>Check-in</label>${h.checkIn ? esc(h.checkIn) : "<em>—</em>"}</div>
-      <div class="field"><label>Check-out</label>${h.checkOut ? esc(h.checkOut) : "<em>—</em>"}</div>
-      <div class="field"><label># of Nights</label>${h.nights ? esc(h.nights) : "<em>—</em>"}</div>
-      <div class="field"><label>Confirmation #</label>${h.confirmation ? esc(h.confirmation) : "<em>—</em>"}</div>
-      <div class="field"><label>Website</label>${h.website ? `<a href="${esc(h.website)}" target="_blank" rel="noopener">${esc(h.website)}</a>` : "<em>—</em>"}</div>
-      <div class="opt-actions edit-only" style="margin-top:8px;">
-        <button title="Edit">Edit</button>
-      </div>
-    `;
-    card.querySelector(".opt-actions button").addEventListener("click", () => openHotelBookingModal(idx));
-    root.appendChild(card);
-  });
-
-  const addWrap = document.getElementById("hotel-bookings-add-wrap");
-  addWrap.innerHTML = "";
-  if (editMode) {
-    const btn = document.createElement("button");
-    btn.className = "add-option-btn";
-    btn.textContent = "+ Add hotel booking";
-    btn.addEventListener("click", () => openHotelBookingModal(null));
-    addWrap.appendChild(btn);
-  }
-}
-
-function openHotelBookingModal(idx) {
-  const isNew = idx === null;
-  const h = isNew ? { name: "", cityAddress: "", contact: "", checkIn: "", checkOut: "", nights: "", confirmation: "", website: "" } : trip.hotelBookings[idx];
-  openModal(isNew ? "Add hotel booking" : "Edit hotel booking", [
-    { key: "name", label: "Hotel name", value: h.name },
-    { key: "cityAddress", label: "Hotel city / address & contact info", value: h.cityAddress },
-    { key: "contact", label: "Contact info", value: h.contact },
-    { key: "checkIn", label: "Check-in date", type: "date", value: h.checkIn },
-    { key: "checkOut", label: "Check-out date", type: "date", value: h.checkOut },
-    { key: "nights", label: "# of nights", value: h.nights },
-    { key: "confirmation", label: "Confirmation #", value: h.confirmation },
-    { key: "website", label: "Link to website", value: h.website }
-  ], (values) => {
-    const newH = { name: values.name, cityAddress: values.cityAddress, contact: values.contact, checkIn: values.checkIn, checkOut: values.checkOut, nights: values.nights, confirmation: values.confirmation, website: values.website };
-    if (isNew) trip.hotelBookings.push(newH);
-    else trip.hotelBookings[idx] = newH;
-    saveTrip();
-    renderHotelBookings();
-  }, isNew ? null : () => {
-    trip.hotelBookings.splice(idx, 1);
-    saveTrip();
-    renderHotelBookings();
-  });
-}
-
-/* --------------------------------------------------------------------------- */
-/* FLIGHT BOOKINGS                                                             */
-/* --------------------------------------------------------------------------- */
-
-function renderFlightBookings() {
-  const root = document.getElementById("flight-bookings-grid");
-  root.innerHTML = "";
-  trip.flightBookings.forEach((f, idx) => {
-    const card = document.createElement("div");
-    card.className = "person-card";
-    card.innerHTML = `
-      <h3>${esc(f.depCity) || "?"} → ${esc(f.arrCity) || "?"}</h3>
-      <div class="person-role">${esc(f.date || "")}</div>
-      <div class="field"><label>Departs</label>${f.depCity ? esc(f.depCity) : "<em>—</em>"}${f.depTime ? " at " + esc(f.depTime) : ""}</div>
-      <div class="field"><label>Arrives</label>${f.arrCity ? esc(f.arrCity) : "<em>—</em>"}${f.arrTime ? " at " + esc(f.arrTime) : ""}</div>
-      <div class="field"><label>Confirmation #</label>${f.confirmation ? esc(f.confirmation) : "<em>—</em>"}</div>
-      <div class="field"><label>Travelers</label>${f.travelers ? esc(f.travelers) : "<em>—</em>"}</div>
-      <div class="opt-actions edit-only" style="margin-top:8px;">
-        <button title="Edit">Edit</button>
-      </div>
-    `;
-    card.querySelector(".opt-actions button").addEventListener("click", () => openFlightBookingModal(idx));
-    root.appendChild(card);
-  });
-
-  const addWrap = document.getElementById("flight-bookings-add-wrap");
-  addWrap.innerHTML = "";
-  if (editMode) {
-    const btn = document.createElement("button");
-    btn.className = "add-option-btn";
-    btn.textContent = "+ Add flight booking";
-    btn.addEventListener("click", () => openFlightBookingModal(null));
-    addWrap.appendChild(btn);
-  }
-}
-
-function openFlightBookingModal(idx) {
-  const isNew = idx === null;
-  const f = isNew ? { date: "", depCity: "", depTime: "", arrCity: "", arrTime: "", confirmation: "", travelers: "" } : trip.flightBookings[idx];
-  const travelerOptions = trip.travelers.map(t => ({ value: t.name, label: t.name }));
-  openModal(isNew ? "Add flight booking" : "Edit flight booking", [
-    { key: "date", label: "Date of flight", type: "date", value: f.date },
-    { key: "depCity", label: "City of departure", value: f.depCity },
-    { key: "depTime", label: "Time of departure", type: "time", value: f.depTime },
-    { key: "arrCity", label: "City of arrival", value: f.arrCity },
-    { key: "arrTime", label: "Time of arrival", type: "time", value: f.arrTime },
-    { key: "confirmation", label: "Confirmation #", value: f.confirmation },
-    { key: "travelers", label: "Travelers", type: "checkboxes", options: travelerOptions, value: f.travelers }
-  ], (values) => {
-    const newF = { date: values.date, depCity: values.depCity, depTime: values.depTime, arrCity: values.arrCity, arrTime: values.arrTime, confirmation: values.confirmation, travelers: values.travelers };
-    if (isNew) trip.flightBookings.push(newF);
-    else trip.flightBookings[idx] = newF;
-    saveTrip();
-    renderFlightBookings();
-  }, isNew ? null : () => {
-    trip.flightBookings.splice(idx, 1);
-    saveTrip();
-    renderFlightBookings();
-  });
-}
-
-/* --------------------------------------------------------------------------- */
-/* BOOKINGS (general cost log)                                                 */
-/* --------------------------------------------------------------------------- */
-
-const BOOKING_TYPES = ["Flight", "Hotel", "Transportation", "Other"];
-
-function renderBookings() {
-  const tbody = document.getElementById("bookings-body");
-  tbody.innerHTML = "";
-  trip.bookings.forEach((b, idx) => {
-    const tr = document.createElement("tr");
-
-    const cityTd = document.createElement("td");
-    cityTd.dataset.label = "City";
-    cityTd.innerHTML = editMode ? `<input data-f="city" value="${esc(b.city)}"/>` : (esc(b.city) || "—");
-    tr.appendChild(cityTd);
-
-    const typeTd = document.createElement("td");
-    typeTd.dataset.label = "Type";
-    if (editMode) {
-      const sel = document.createElement("select");
-      BOOKING_TYPES.forEach(opt => {
-        const o = document.createElement("option");
-        o.value = opt;
-        o.textContent = opt;
-        if (opt === b.type) o.selected = true;
-        sel.appendChild(o);
-      });
-      sel.addEventListener("change", () => { trip.bookings[idx].type = sel.value; saveTrip(); });
-      typeTd.appendChild(sel);
-    } else {
-      typeTd.textContent = b.type || "—";
-    }
-    tr.appendChild(typeTd);
-
-    const nameTd = document.createElement("td");
-    nameTd.dataset.label = "Name";
-    nameTd.innerHTML = editMode ? `<input data-f="name" value="${esc(b.name)}"/>` : (esc(b.name) || "—");
-    tr.appendChild(nameTd);
-
-    const priceTd = document.createElement("td");
-    priceTd.dataset.label = "Price";
-    priceTd.innerHTML = editMode ? `<input data-f="price" value="${esc(b.price)}"/>` : (esc(b.price) || "—");
-    tr.appendChild(priceTd);
-
-    if (editMode) {
-      const delTd = document.createElement("td");
-      const delBtn = document.createElement("button");
-      delBtn.className = "item-del";
-      delBtn.textContent = "✕";
-      delBtn.addEventListener("click", () => { trip.bookings.splice(idx, 1); saveTrip(); renderBookings(); });
-      delTd.appendChild(delBtn);
-      tr.appendChild(delTd);
-
-      tr.querySelectorAll('input[data-f]').forEach(inp => {
-        inp.addEventListener("change", () => { trip.bookings[idx][inp.dataset.f] = inp.value; saveTrip(); });
-      });
-    }
-
-    tbody.appendChild(tr);
-  });
-
-  const addWrap = document.getElementById("bookings-add-wrap");
-  addWrap.innerHTML = "";
-  if (editMode) {
-    const btn = document.createElement("button");
-    btn.className = "add-option-btn";
-    btn.textContent = "+ Add booking";
-    btn.addEventListener("click", () => {
-      trip.bookings.push({ city: "", type: "Flight", name: "", price: "" });
-      saveTrip();
-      renderBookings();
-    });
-    addWrap.appendChild(btn);
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* PARKING LOT ITEMS (loose ideas / things to figure out later)               */
-/* -------------------------------------------------------------------------- */
-
-function renderParkingLot() {
-  const root = document.getElementById("parking-lot-list");
-  renderChecklist(root, trip.parkingLot, {
-    onToggle: (i) => { trip.parkingLot[i].done = !trip.parkingLot[i].done; saveTrip(); renderParkingLot(); },
-    onDelete: (i) => { trip.parkingLot.splice(i, 1); saveTrip(); renderParkingLot(); }
-  });
-  const addWrap = document.getElementById("parking-lot-add-wrap");
-  addWrap.innerHTML = "";
-  if (editMode) {
-    addWrap.appendChild(buildAddRow("Add a parking lot item…", (text) => {
-      trip.parkingLot.push({ text, done: false });
-      saveTrip();
-      renderParkingLot();
-    }));
-  }
 }
