@@ -44,8 +44,8 @@ const DEFAULT_TRIP = {
   // ------------------------------------------------------------------------
   flights: [
     { id: "f1", date: "2026-11-03", route: "LAX → Tokyo (Narita, NRT)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Overnight flight" },
-    { id: "f2", date: "2026-11-05", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Staying near Narita the night before to make this easier" },
-    { id: "f3", date: "2026-11-08", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Flying straight to Osaka instead of backtracking through Tokyo" },
+    { id: "f2", date: "2026-11-05", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", travelers: "All 10", airline: "ZIPAIR Tokyo", flightNo: "", depart: "08:55", arrive: "11:35", confirmation: "", notes: "Example booking found: ZIPAIR NRT→ICN, non-stop, 2h40m, ~$239 total for the multi-city pair with the return leg below" },
+    { id: "f3", date: "2026-11-08", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "Peach Aviation", flightNo: "", depart: "15:05", arrive: "16:50", confirmation: "", notes: "Example booking found: Peach Aviation ICN→KIX, non-stop, 1h45m — booked as separate ticket alongside the ZIPAIR leg" },
     { id: "f4", date: "2026-11-17", route: "Tokyo (Narita, NRT) → LAX", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Departure must be out of Narita" }
   ],
 
@@ -132,7 +132,7 @@ const DEFAULT_TRIP = {
           { title: "Hotel checkout, transfer to Narita Airport", desc: "Hotel's round-trip airport transfer — needs to be reserved ahead of time (see Parking Lot).", place: "Narita Airport", tag: "travel" }
         ],
         lunch: [
-          { title: "Fly Narita → Incheon", desc: "", tag: "travel" }
+          { title: "Fly Narita → Incheon", desc: "ZIPAIR Tokyo, 08:55–11:35, non-stop", tag: "travel" }
         ],
         afternoon: [
           { title: "Arrive Incheon, transfer to Conrad Seoul", desc: "AREX express train or private car, then check in.", place: "Incheon Airport", tag: "travel" },
@@ -224,7 +224,7 @@ const DEFAULT_TRIP = {
           { title: "Airport lunch", desc: "", tag: "travel" }
         ],
         afternoon: [
-          { title: "Fly Incheon → Kansai (Osaka)", desc: "Arrive, transfer to hotel, check in.", place: "Kansai Airport", tag: "travel" },
+          { title: "Fly Incheon → Kansai (Osaka)", desc: "Peach Aviation, 15:05–16:50, non-stop. Arrive, transfer to hotel, check in.", place: "Kansai Airport", tag: "travel" },
           { title: "On your own", desc: "", tag: "own" }
         ],
         dinner: [
@@ -540,7 +540,8 @@ const DEFAULT_TRIP = {
   // PARKING LOT ITEMS (loose ideas / things to figure out later)
   // ------------------------------------------------------------------------
   parkingLot: [
-    { text: "PRIORITY: Everyone needs to book their Seoul flights", done: false },
+    { text: "PRIORITY: Book the Tokyo hotel for the part 2 stay (Nov 14–17, after Hakone)", done: false },
+    { text: "PRIORITY: Everyone needs to book their Seoul flights — example found: ZIPAIR NRT→ICN Thu Nov 5 (08:55–11:35, non-stop) + Peach Aviation ICN→KIX Sun Nov 8 (15:05–16:50, non-stop), ~$239 total as separate tickets", done: false },
     { text: "Reserve the round-trip NRT airport-to-hotel transport that's included with the Hotel Nikko Narita booking (via Agoda) — just needs to be scheduled", done: false },
     { text: "Everyone needs to book Conrad Seoul (or a nearby hotel) for the Seoul leg, if they haven't already", done: false },
     { text: "Book the Hakone ryokan — first need to ask the group how many rooms are needed, and whether everyone needs to stay at the same property (if not, Dave can send a list of hotel options instead)", done: false }
