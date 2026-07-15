@@ -29,7 +29,7 @@ const DEFAULT_TRIP = {
     { id: "dave",     name: "Dave",     role: "Trip organizer", easyPace: false, email: "dkeschner@gmail.com", phone: "", whatsapp: "", notes: "" },
     { id: "linda",    name: "Linda",    role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "leah",     name: "Leah",     role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
-    { id: "brian",    name: "Brian",    role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
+    { id: "brian",    name: "Briann",   role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "john",     name: "John",     role: "", easyPace: false, email: "", phone: "", whatsapp: "", notes: "" },
     { id: "duke",     name: "Duke",     role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "Traveling with Emma" },
     { id: "michelle", name: "Michelle", role: "", easyPace: true,  email: "", phone: "", whatsapp: "", notes: "Traveling with Emma" },
