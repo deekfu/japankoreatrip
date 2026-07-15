@@ -144,6 +144,22 @@ main {
   flex-wrap: wrap;
 }
 .day-card .day-head:hover { background: #fbf9f6; }
+.day-date-block {
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+.day-head-main { flex: 1; min-width: 140px; }
 .day-title { font-weight: 700; font-size: 1.02rem; }
 .day-sub { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
 .day-meta { font-size: 0.8rem; color: var(--muted); text-align: right; }
