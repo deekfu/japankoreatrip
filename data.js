@@ -44,8 +44,8 @@ const DEFAULT_TRIP = {
   // ------------------------------------------------------------------------
   flights: [
     { id: "f1", date: "2026-11-03", route: "LAX → Tokyo (Narita, NRT)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Overnight flight" },
-    { id: "f2", date: "2026-11-06", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Staying near Narita the night before to make this easier" },
-    { id: "f3", date: "2026-11-09", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Flying straight to Osaka instead of backtracking through Tokyo" },
+    { id: "f2", date: "2026-11-05", route: "Tokyo (Narita, NRT) → Seoul (Incheon, ICN)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Staying near Narita the night before to make this easier" },
+    { id: "f3", date: "2026-11-08", route: "Seoul (Incheon, ICN) → Osaka (Kansai, KIX)", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Flying straight to Osaka instead of backtracking through Tokyo" },
     { id: "f4", date: "2026-11-17", route: "Tokyo (Narita, NRT) → LAX", travelers: "All 10", airline: "", flightNo: "", depart: "", arrive: "", confirmation: "", notes: "Departure must be out of Narita" }
   ],
 
@@ -53,7 +53,8 @@ const DEFAULT_TRIP = {
   // HOTEL BOOKINGS (fill in as reservations are confirmed)
   // ------------------------------------------------------------------------
   hotelBookings: [
-    { name: "Hotel Nikko Narita", cityAddress: "500 Tokko, Narita-shi, Chiba, Japan 286-0106", contact: "+81 476 32 1133 · Booked via Agoda.com, includes round-trip Narita Airport transfers", checkIn: "2026-11-04", checkOut: "2026-11-05", nights: "1", confirmation: "1027793554", website: "" }
+    { name: "Hotel Nikko Narita", cityAddress: "500 Tokko, Narita-shi, Chiba, Japan 286-0106", contact: "+81 476 32 1133 · Booked via Agoda.com — round-trip Narita Airport transfer is included but needs to be reserved separately (see Parking Lot) · 5 rooms reserved · Free cancellation until 2026-11-03", checkIn: "2026-11-04", checkOut: "2026-11-05", nights: "1", confirmation: "1027793554", website: "" },
+    { name: "Conrad Seoul", cityAddress: "10 Gukjegeumyung-ro, Yeouido, Yeongdeungpo-gu, Seoul 07326 KR", contact: "+82 2 6137 7000 · Dave's reservation — everyone else still needs to book (see Parking Lot)", checkIn: "2026-11-05", checkOut: "2026-11-08", nights: "3", confirmation: "3493457793", website: "" }
   ],
 
   // ------------------------------------------------------------------------
@@ -65,7 +66,8 @@ const DEFAULT_TRIP = {
   // BOOKINGS (general log of what's been booked and what it cost)
   // ------------------------------------------------------------------------
   bookings: [
-    { city: "Narita", type: "Hotel", name: "Hotel Nikko Narita", price: "444.75" }
+    { city: "Narita", type: "Hotel", name: "Hotel Nikko Narita", price: "444.75" },
+    { city: "Seoul", type: "Hotel", name: "Conrad Seoul", price: "" }
   ],
 
   // ------------------------------------------------------------------------
@@ -123,47 +125,17 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-05", label: "Day 3 — Thu", city: "Tokyo → Narita area", hotel: "Narita-area hotel (TBD)",
-      summary: "Last Tokyo morning, then move closer to the airport for tomorrow's early flight to Seoul.",
+      date: "2026-11-05", label: "Day 3 — Thu", city: "Narita → Seoul", hotel: "Conrad Seoul",
+      summary: "Check out of the Narita hotel, fly to Seoul, and settle into the Conrad.",
       slots: {
         morning: [
-          { title: "Asakusa Senso-ji + Nakamise shopping street", desc: "Flat, covered arcade — easy and great for all ages.", place: "Senso-ji Temple", city: "Tokyo", tag: "easy" },
-          { title: "Tsukiji Outer Market food walk", desc: "Great food stalls, but crowded and more standing/walking.", place: "Tsukiji Outer Market", city: "Tokyo", tag: "foodie" },
-          { title: "On your own", desc: "", tag: "own" }
+          { title: "Hotel checkout, transfer to Narita Airport", desc: "Hotel's round-trip airport transfer — needs to be reserved ahead of time (see Parking Lot).", place: "Narita Airport", tag: "travel" }
         ],
         lunch: [
-          { title: "Sushi set lunch near Asakusa", desc: "Seated sushi lunch, easy.", place: "Asakusa sushi", city: "Tokyo", tag: "easy" },
-          { title: "Tempura counter lunch", desc: "", place: "Tempura restaurant", city: "Tokyo", tag: "foodie" },
-          { title: "On your own", desc: "", tag: "own" }
-        ],
-        afternoon: [
-          { title: "Transfer to Narita-area hotel", desc: "Train (Skyliner/N'EX) or private van — positions us for an easy early flight tomorrow.", place: "Narita", tag: "travel" },
-          { title: "On your own", desc: "", tag: "own" }
-        ],
-        dinner: [
-          { title: "Hotel restaurant", desc: "No extra travel needed — easiest option for a travel day.", tag: "easy" },
-          { title: "Narita Omotesando unagi street", desc: "Historic street near Naritasan Temple known for grilled eel.", place: "Narita Omotesando", city: "Narita", tag: "foodie" },
-          { title: "On your own", desc: "", tag: "own" }
-        ],
-        night: [
-          { title: "Early to bed — pack for the flight", desc: "Early wheels-up tomorrow.", tag: "easy" },
-          { title: "Hotel onsen/spa", desc: "If the hotel has one — relaxing before travel.", tag: "easy" },
-          { title: "On your own", desc: "", tag: "own" }
-        ]
-      }
-    },
-    {
-      date: "2026-11-06", label: "Day 4 — Fri", city: "→ Seoul", hotel: "Seoul hotel (TBD)",
-      summary: "Fly to Seoul, check in, ease into the city.",
-      slots: {
-        morning: [
           { title: "Fly Narita → Incheon", desc: "", tag: "travel" }
         ],
-        lunch: [
-          { title: "Airport / in-flight", desc: "", tag: "travel" }
-        ],
         afternoon: [
-          { title: "Arrive Incheon, transfer to hotel", desc: "AREX express train or private van, then check in.", place: "Incheon Airport", tag: "travel" },
+          { title: "Arrive Incheon, transfer to Conrad Seoul", desc: "AREX express train or private car, then check in.", place: "Incheon Airport", tag: "travel" },
           { title: "On your own", desc: "", tag: "own" }
         ],
         dinner: [
@@ -179,7 +151,7 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-07", label: "Day 5 — Sat", city: "Seoul", hotel: "Seoul hotel (TBD)",
+      date: "2026-11-06", label: "Day 4 — Fri", city: "Seoul", hotel: "Conrad Seoul",
       summary: "Palace, Insadong, and N Seoul Tower.",
       slots: {
         morning: [
@@ -210,7 +182,7 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-08", label: "Day 6 — Sun", city: "Seoul", hotel: "Seoul hotel (TBD)",
+      date: "2026-11-07", label: "Day 5 — Sat", city: "Seoul", hotel: "Conrad Seoul",
       summary: "Markets and Seongsu, with a DMZ day-trip alternative for anyone who wants it.",
       slots: {
         morning: [
@@ -241,7 +213,7 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-09", label: "Day 7 — Mon", city: "→ Osaka", hotel: "Osaka hotel (TBD)",
+      date: "2026-11-08", label: "Day 6 — Sun", city: "→ Osaka", hotel: "Osaka hotel (TBD)",
       summary: "Fly straight from Seoul to Osaka — skips backtracking through Tokyo.",
       slots: {
         morning: [
@@ -268,7 +240,7 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-10", label: "Day 8 — Tue", city: "Osaka", hotel: "Osaka hotel (TBD)",
+      date: "2026-11-09", label: "Day 7 — Mon", city: "Osaka", hotel: "Osaka hotel (TBD)",
       summary: "Osaka Castle, markets, and shopping.",
       slots: {
         morning: [
@@ -299,7 +271,7 @@ const DEFAULT_TRIP = {
       }
     },
     {
-      date: "2026-11-11", label: "Day 9 — Wed", city: "Osaka / Kyoto (optional split day)", hotel: "Osaka hotel (TBD)",
+      date: "2026-11-10", label: "Day 8 — Tue", city: "Osaka / Kyoto (optional split day)", hotel: "Osaka hotel (TBD)",
       summary: "Choose your own adventure: easy Osaka day, or an active Kyoto day trip (Fushimi Inari).",
       slots: {
         morning: [
@@ -325,6 +297,35 @@ const DEFAULT_TRIP = {
         night: [
           { title: "Hotel rest", desc: "", tag: "easy" },
           { title: "Namba Yasaka Shrine + local bar", desc: "Quick stop at the lion-head stage, then a nightcap.", place: "Namba Yasaka Shrine", city: "Osaka", tag: "active" },
+          { title: "On your own", desc: "", tag: "own" }
+        ]
+      }
+    },
+    {
+      date: "2026-11-11", label: "Day 9 — Wed", city: "Osaka (Minoh Falls day trip)", hotel: "Osaka hotel (TBD)",
+      summary: "Dedicated day trip to Minoh Falls, with an easier low-walking alternative in the city for anyone who'd rather skip the hike.",
+      slots: {
+        morning: [
+          { title: "Minoh Falls hike", desc: "A scenic ~1 hour (each way) walk through forest to a 33m waterfall just outside Osaka — mostly paved trail, moderate walking.", place: "Minoh Falls", city: "Osaka", tag: "active" },
+          { title: "Osaka Museum of Housing and Living", desc: "Indoor recreated Edo-period streetscape — easy, low-walking alternative to the hike.", place: "Osaka Museum of Housing and Living", city: "Osaka", tag: "easy" },
+          { title: "On your own", desc: "", tag: "own" }
+        ],
+        lunch: [
+          { title: "Momiji tempura near the falls", desc: "Minoh's famous maple-leaf tempura, sold by vendors along the trail.", place: "Minoh Falls", city: "Osaka", tag: "foodie" },
+          { title: "Denden Town food stop", desc: "Casual lunch spot in Nipponbashi.", place: "Denden Town", city: "Osaka", tag: "easy" },
+          { title: "On your own", desc: "", tag: "own" }
+        ],
+        afternoon: [
+          { title: "Return hike / Minoh Park stroll", desc: "Walk back down, or linger by the falls before heading back into the city.", place: "Minoh Park", city: "Osaka", tag: "active" },
+          { title: "Denden Town browsing", desc: "Retro electronics, anime, and manga shops — Osaka's answer to Akihabara.", place: "Denden Town", city: "Osaka", tag: "easy" },
+          { title: "On your own", desc: "", tag: "own" }
+        ],
+        dinner: [
+          { title: "Tsutenkaku / Shinsekai dinner", desc: "Retro tower district near Denden Town — kushikatsu and neon signs.", place: "Tsutenkaku", city: "Osaka", tag: "easy" },
+          { title: "On your own", desc: "", tag: "own" }
+        ],
+        night: [
+          { title: "Hotel rest", desc: "Recover after a walking-heavy day.", tag: "easy" },
           { title: "On your own", desc: "", tag: "own" }
         ]
       }
@@ -521,6 +522,7 @@ const DEFAULT_TRIP = {
     { text: "Book Hakone ryokan (signature group experience)", owner: "Dave", due: "", done: false },
     { text: "Pre-book teamLab Planets tickets", owner: "Dave", due: "", done: false },
     { text: "Book Seoul group lodging", owner: "Dave", due: "", done: false },
+    { text: "Confirm/coordinate Conrad Seoul (or nearby) hotel reservations for the whole group", owner: "Dave", due: "", done: false },
     { text: "Book Osaka group lodging", owner: "Dave", due: "", done: false },
     { text: "Book Tokyo group lodging (both stays)", owner: "Dave", due: "", done: false },
     { text: "Confirm Korea entry requirements (K-ETA/visa) for all 10 travelers", owner: "Dave", due: "", done: false },
@@ -537,7 +539,12 @@ const DEFAULT_TRIP = {
   // ------------------------------------------------------------------------
   // PARKING LOT ITEMS (loose ideas / things to figure out later)
   // ------------------------------------------------------------------------
-  parkingLot: [],
+  parkingLot: [
+    { text: "PRIORITY: Everyone needs to book their Seoul flights", done: false },
+    { text: "Reserve the round-trip NRT airport-to-hotel transport that's included with the Hotel Nikko Narita booking (via Agoda) — just needs to be scheduled", done: false },
+    { text: "Everyone needs to book Conrad Seoul (or a nearby hotel) for the Seoul leg, if they haven't already", done: false },
+    { text: "Book the Hakone ryokan — first need to ask the group how many rooms are needed, and whether everyone needs to stay at the same property (if not, Dave can send a list of hotel options instead)", done: false }
+  ],
 
   // ------------------------------------------------------------------------
   // PREP TIMELINE (packing/organizing → airport → trip → arrival back)
